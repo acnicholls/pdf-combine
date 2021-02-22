@@ -5,6 +5,7 @@ using PdfSharp.Pdf;
 using System.Linq;
 using System.IO;
 using System.Data;
+using PdfSharp.Pdf.IO;
 
 namespace pdf_combine
 {
@@ -17,7 +18,7 @@ namespace pdf_combine
                 PdfDocument newDoc = new PdfDocument();
                 foreach (var file in fileListRows.OrderBy(x => x.order))
                 {
-                    PdfDocument oldFile = new PdfDocument(Path.Combine(file.filePath, file.filename));
+                    var oldFile = PdfReader.Open(Path.Combine(file.filePath, file.filename), PdfDocumentOpenMode.Import);
                     foreach (var page in oldFile.Pages)
                     {
                         newDoc.Pages.Add(page);
@@ -27,7 +28,7 @@ namespace pdf_combine
             }
             catch(Exception x)
             {
-                return false;
+                throw x;
             }
             return true;
         }

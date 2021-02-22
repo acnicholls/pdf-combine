@@ -47,7 +47,7 @@ namespace pdf_combine
         {
             sfDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             sfDialog.Title = "Select where you want the output file and the name of the new file...";
-            //sfDialog.Filter = "pdf";
+            sfDialog.Filter = "PDF Files|*.pdf";
             var result = sfDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
@@ -57,13 +57,14 @@ namespace pdf_combine
                 {
                     rows.Add(row);
                 }
-                if (Combine.Start(rows, sfDialog.FileName))
+                try
                 {
+                    Combine.Start(rows, sfDialog.FileName);
                     MessageBox.Show("Success");
                 }
-                else
+                catch(Exception x)
                 {
-                    MessageBox.Show("Something went wrong, please try again...");
+                    MessageBox.Show(x.Message, "Something went wrong...");
                 }
             }
         }
