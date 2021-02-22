@@ -5,6 +5,11 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <RootNamespace>pdf_combine</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
+    <Authors>acnicholls</Authors>
+    <Company>acnicholls</Company>
+    <Description>combines selected pdf files into one pdf file</Description>
+    <Copyright>acnicholls</Copyright>
+    <RepositoryUrl>www.github.com/acnicholls/pdf-combine</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
