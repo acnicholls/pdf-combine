@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="PdfFileList" targetNamespace="http://tempuri.org/PdfFileList.xsd" xmlns:mstns="http://tempuri.org/PdfFileList.xsd" xmlns="http://tempuri.org/PdfFileList.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="PdfFileList" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="PdfFileList" msprop:Generator_UserDSName="PdfFileList">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="FileList" msprop:Generator_TableClassName="FileListDataTable" msprop:Generator_TableVarName="tableFileList" msprop:Generator_TablePropName="FileList" msprop:Generator_RowDeletingName="FileListRowDeleting" msprop:Generator_RowChangingName="FileListRowChanging" msprop:Generator_RowEvHandlerName="FileListRowChangeEventHandler" msprop:Generator_RowDeletedName="FileListRowDeleted" msprop:Generator_UserTableName="FileList" msprop:Generator_RowChangedName="FileListRowChanged" msprop:Generator_RowEvArgName="FileListRowChangeEvent" msprop:Generator_RowClassName="FileListRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" msdata:ReadOnly="true" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="1" msprop:Generator_ColumnVarNameInTable="columnid" msprop:Generator_ColumnPropNameInRow="id" msprop:Generator_ColumnPropNameInTable="idColumn" msprop:Generator_UserColumnName="id" type="xs:int" />
+              <xs:element name="filename" msprop:Generator_ColumnVarNameInTable="columnfilename" msprop:Generator_ColumnPropNameInRow="filename" msprop:Generator_ColumnPropNameInTable="filenameColumn" msprop:Generator_UserColumnName="filename" type="xs:string" />
+              <xs:element name="order" msprop:Generator_ColumnVarNameInTable="columnorder" msprop:Generator_ColumnPropNameInRow="order" msprop:Generator_ColumnPropNameInTable="orderColumn" msprop:Generator_UserColumnName="order" type="xs:int" />
+              <xs:element name="filePath" msprop:Generator_ColumnVarNameInTable="columnfilePath" msprop:Generator_ColumnPropNameInRow="filePath" msprop:Generator_ColumnPropNameInTable="filePathColumn" msprop:Generator_UserColumnName="filePath" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="PK_FileList" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:FileList" />
+      <xs:field xpath="mstns:id" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>
