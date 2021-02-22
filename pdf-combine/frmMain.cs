@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace pdf_combine
 {
@@ -60,11 +57,11 @@ namespace pdf_combine
                 try
                 {
                     Combine.Start(rows, sfDialog.FileName);
-                    MessageBox.Show("Success");
+                    MessageBox.Show(this, "Success");
                 }
                 catch(Exception x)
                 {
-                    MessageBox.Show(x.Message, "Something went wrong...");
+                    MessageBox.Show(this, x.Message, "Something went wrong...");
                 }
             }
         }
@@ -75,7 +72,7 @@ namespace pdf_combine
             var selectedIndex = this.lbFileList.SelectedIndex;
             if (selectedRow.order == 0)
             {
-                MessageBox.Show("You cannot move the top item up.");
+                MessageBox.Show(this, "You cannot move the top item up.");
                 return;
             }
             ReorderItems(MovementDirection.Up, selectedRow);
@@ -88,7 +85,7 @@ namespace pdf_combine
             var selectedIndex = this.lbFileList.SelectedIndex;
             if (selectedRow.order == this.lbFileList.Items.Count - 1)
             {
-                MessageBox.Show("You cannot move the bottom item down.");
+                MessageBox.Show(this, "You cannot move the bottom item down.");
                 return;
             }
             ReorderItems(MovementDirection.Down, selectedRow);

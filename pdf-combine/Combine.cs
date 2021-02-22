@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using PdfSharp.Pdf;
-using System.Linq;
-using System.IO;
-using System.Data;
+﻿using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
 
 namespace pdf_combine
 {

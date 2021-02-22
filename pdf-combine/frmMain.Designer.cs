@@ -133,6 +133,7 @@ namespace pdf_combine
             this.MaximizeBox = false;
             this.Name = "frmMain";
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PDF Combiner";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.ResumeLayout(false);
