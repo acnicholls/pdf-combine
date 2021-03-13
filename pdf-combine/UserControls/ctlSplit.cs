@@ -25,10 +25,8 @@ namespace pdf_combine.UserControls
         {
             // make sure we only have expected characters
             //string validChars = @"1234567890\-,";
-            string regExMatch = @"^[^1234567890\-,]$";
-            var matches = Regex.IsMatch(inputString, regExMatch);
-            var match = Regex.Match(inputString, regExMatch, RegexOptions.IgnoreCase);
-            if (match.Success)
+            string regExMatch = @"[^1234567890\-,]";
+            if (Regex.IsMatch(inputString, regExMatch))
             {
                 return false;
             }
@@ -36,23 +34,60 @@ namespace pdf_combine.UserControls
             var pageRanges = inputString.Split(',');
             foreach (var page in pageRanges)
             {
-                // only one dash per range
-                if (page.Count(c => c.ToString() == "-") > 1)
+                if (page.Length > 1)
                 {
-                    return false;
+                    var onlyOneDash = true;
+                    var noCommas = true;
+                    // only one dash per range
+                    if (page.Count(c => c.ToString() == "-") > 1)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        onlyOneDash = true;
+                    }
+                    // no commas allowed in a range
+                    if (page.Any(c => c.ToString() == ","))
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        noCommas = true;
+                    }
+                    if (onlyOneDash && noCommas)
+                    {
+                        // check if it's number-dash-number
+                        var regexMatch = @"\d+\-\d+";
+                        if (!Regex.IsMatch(page, regexMatch))
+                        {
+                            return false;
+                        }
+                        var rangeEnds = page.Split("-");
+                        if(Convert.ToInt32(rangeEnds[0]) > Convert.ToInt32(rangeEnds[1]))
+                        {
+                            return false;
+                        }
+                    }
+
                 }
-                // no commas allowed in a range
-                if (page.Any(c => c.ToString() == ","))
+                else
                 {
-                    return false;
+                    regExMatch = @"[^123456789]";
+                    if (Regex.IsMatch(page, regExMatch))
+                    {
+                        return false;
+                    }
                 }
             }
+
             return true;
         }
 
         private void btnSplit_Click(object sender, EventArgs e)
         {
-            if(string.IsNullOrWhiteSpace(inputFilename))
+            if (string.IsNullOrWhiteSpace(inputFilename))
             {
                 MessageBox.Show("You must choose a file to copy from.");
                 return;
@@ -78,7 +113,7 @@ namespace pdf_combine.UserControls
                     }
                     else
                     {
-                        if(Convert.ToInt32(pageRequest) > Convert.ToInt32(this.txtNumOfPages.Text))
+                        if (Convert.ToInt32(pageRequest) > Convert.ToInt32(this.txtNumOfPages.Text))
                         {
                             MessageBox.Show("You have selected a apge outside the valid range.");
                             pageList.Clear();
@@ -95,7 +130,7 @@ namespace pdf_combine.UserControls
                     this.txtNumOfPages.Text = "";
                     this.txtPageRange.Text = "";
                 }
-                catch(Exception x)
+                catch (Exception x)
                 {
                     MessageBox.Show(x.Message, "Something went wrong...");
                 }

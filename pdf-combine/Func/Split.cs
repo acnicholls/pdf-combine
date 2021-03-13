@@ -17,9 +17,10 @@ namespace pdf_combine.Func
         /// <returns>true if successful</returns>
         public static bool Start(IList<int> pageListRows, string inputFilename)
         {
-            
+            PdfDocument newPage = null;
             try
             {
+
                 string basePath = Path.GetDirectoryName(inputFilename);
                 string filePath = Path.GetFileNameWithoutExtension(inputFilename);
                 DirectoryInfo outputDir = new DirectoryInfo(Path.Combine(basePath, filePath));
@@ -32,16 +33,22 @@ namespace pdf_combine.Func
                 foreach (var page in pageListRows)
                 {
                     var newFileName = Path.Combine(outputDir.FullName, "Page" + (page + 1) + ".pdf");
-                    PdfDocument newPage = new PdfDocument(newFileName);
+                    newPage = new PdfDocument(newFileName);
+                    newPage.Save(newFileName);
+                    newPage.Close();
+                    // reopen in import mode
                     newPage = PdfReader.Open(newFileName, PdfDocumentOpenMode.Import);                  
-                    
-                    newPage.AddPage(oldFile.Pages[page]);
+                    var newPdfPage = oldFile.Pages[page];
                     newPage.Save(newFileName);
                     newPage.Close();
                 }
             }
             catch (Exception x)
             {
+                if (newPage != null)
+                {
+                    newPage.Close();
+                }
                 return false;
             }
             return true;
