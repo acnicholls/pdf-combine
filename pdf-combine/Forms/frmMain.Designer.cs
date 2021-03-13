@@ -39,14 +39,14 @@ namespace pdf_combine.Forms
             // 
             // ctlCombineUi
             // 
-            this.ctlCombineUi.Location = new System.Drawing.Point(0, 36);
+            this.ctlCombineUi.Location = new System.Drawing.Point(0, 25);
             this.ctlCombineUi.Name = "ctlCombineUi";
             this.ctlCombineUi.Size = new System.Drawing.Size(285, 301);
             this.ctlCombineUi.TabIndex = 1;
             // 
             // ctlSplitUi
             // 
-            this.ctlSplitUi.Location = new System.Drawing.Point(0, 36);
+            this.ctlSplitUi.Location = new System.Drawing.Point(0, 25);
             this.ctlSplitUi.Name = "ctlSplitUi";
             this.ctlSplitUi.Size = new System.Drawing.Size(285, 301);
             this.ctlSplitUi.TabIndex = 0;
@@ -80,9 +80,9 @@ namespace pdf_combine.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(285, 335);
-            this.Controls.Add(this.ctlSplitUi);
             this.Controls.Add(this.ctlCombineUi);
             this.Controls.Add(this.MainMenu);
+            this.Controls.Add(this.ctlSplitUi);
             this.MainMenuStrip = this.MainMenu;
             this.MaximizeBox = false;
             this.Name = "frmMain";
