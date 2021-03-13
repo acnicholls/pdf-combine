@@ -36,7 +36,8 @@ namespace pdf_combine.UserControls
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.lblPageList = new System.Windows.Forms.Label();
             this.lblExample = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnSplit = new System.Windows.Forms.Button();
+            this.lblSplit = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // ofDialog
@@ -60,6 +61,7 @@ namespace pdf_combine.UserControls
             this.btnChoose.TabIndex = 1;
             this.btnChoose.Text = "Choose...";
             this.btnChoose.UseVisualStyleBackColor = true;
+            this.btnChoose.Click += new System.EventHandler(this.btnChoose_Click);
             // 
             // textBox1
             // 
@@ -95,20 +97,31 @@ namespace pdf_combine.UserControls
             this.lblExample.TabIndex = 5;
             this.lblExample.Text = "ex: 1, 2.4, 7-8, 10";
             // 
-            // button1
+            // btnSplit
             // 
-            this.button1.Location = new System.Drawing.Point(13, 269);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(227, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Split";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnSplit.Location = new System.Drawing.Point(13, 269);
+            this.btnSplit.Name = "btnSplit";
+            this.btnSplit.Size = new System.Drawing.Size(227, 23);
+            this.btnSplit.TabIndex = 6;
+            this.btnSplit.Text = "Split";
+            this.btnSplit.UseVisualStyleBackColor = true;
+            this.btnSplit.Click += new System.EventHandler(this.btnSplit_Click);
+            // 
+            // lblSplit
+            // 
+            this.lblSplit.Location = new System.Drawing.Point(13, 210);
+            this.lblSplit.Name = "lblSplit";
+            this.lblSplit.Size = new System.Drawing.Size(260, 56);
+            this.lblSplit.TabIndex = 7;
+            this.lblSplit.Text = "Your resulting split pages will be ina folder with the same name as the input fil" +
+    "e, named for their page.";
             // 
             // ctlSplit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.lblSplit);
+            this.Controls.Add(this.btnSplit);
             this.Controls.Add(this.lblExample);
             this.Controls.Add(this.lblPageList);
             this.Controls.Add(this.textBox2);
@@ -131,6 +144,7 @@ namespace pdf_combine.UserControls
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label lblPageList;
         private System.Windows.Forms.Label lblExample;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnSplit;
+        private System.Windows.Forms.Label lblSplit;
     }
 }

@@ -19,6 +19,14 @@ namespace pdf_combine.UserControls
             InitializeComponent();
         }
 
+        private void btnSplit_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void btnChoose_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
