@@ -24,9 +24,10 @@ namespace pdf_combine.UserControls
         private bool validateBtnSplitText(string inputString)
         {
             // make sure we only have expected characters
-            string validChars = @"1234567890\-,";
-            string regExMatch = "/[^" + validChars + "]+/g";
-            var match = Regex.Match(inputString, regExMatch);
+            //string validChars = @"1234567890\-,";
+            string regExMatch = @"^[^1234567890\-,]$";
+            var matches = Regex.IsMatch(inputString, regExMatch);
+            var match = Regex.Match(inputString, regExMatch, RegexOptions.IgnoreCase);
             if (match.Success)
             {
                 return false;
@@ -77,6 +78,12 @@ namespace pdf_combine.UserControls
                     }
                     else
                     {
+                        if(Convert.ToInt32(pageRequest) > Convert.ToInt32(this.txtNumOfPages.Text))
+                        {
+                            MessageBox.Show("You have selected a apge outside the valid range.");
+                            pageList.Clear();
+                            return;
+                        }
                         pageList.Add(Convert.ToInt32(pageRequest) - 1);
                     }
                 }
