@@ -4,13 +4,14 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using pdf_combine.Func;
 
-namespace pdf_combine
+namespace pdf_combine.UserControls
 {
-    public partial class frmMain : Form
+    public partial class ctlCombine : UserControl
     {
         private PdfFileList fileList = new PdfFileList();
-        public frmMain()
+        public ctlCombine()
         {
             InitializeComponent();
         }

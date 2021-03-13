@@ -1,7 +1,7 @@
 ﻿
-namespace pdf_combine
+namespace pdf_combine.UserControls
 {
-    partial class frmMain
+    partial class ctlCombine
     {
         /// <summary>
         /// Required designer variable.
@@ -118,11 +118,10 @@ namespace pdf_combine
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
-            // frmMain
+            // ctlCombine
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(285, 301);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.lblInstructions);
             this.Controls.Add(this.btnOrderDown);
@@ -130,11 +129,8 @@ namespace pdf_combine
             this.Controls.Add(this.btnCombine);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.lbFileList);
-            this.MaximizeBox = false;
-            this.Name = "frmMain";
-            this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "PDF Combiner";
+            this.Name = "ctlCombine";
+            this.Size = new System.Drawing.Size(285, 301);
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.ResumeLayout(false);
 
@@ -151,5 +147,6 @@ namespace pdf_combine
         private System.Windows.Forms.OpenFileDialog ofDialog;
         private System.Windows.Forms.SaveFileDialog sfDialog;
         private System.Windows.Forms.Button btnRemove;
+
     }
 }
