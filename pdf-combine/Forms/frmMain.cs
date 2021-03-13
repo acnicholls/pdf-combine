@@ -11,20 +11,15 @@ namespace pdf_combine.Forms
 {
     public partial class frmMain : Form
     {
-        private ctlCombine ctlCombine;
-        private ctlSplit ctlSplit;
-        private PdfFileList fileList;
         public frmMain()
         {
-            ctlCombine = new ctlCombine();
-            ctlSplit = new ctlSplit();
-            fileList = new PdfFileList();
             InitializeComponent();
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-
+            this.ctlSplitUi.Hide();
+            this.ctlCombineUi.Show();
         }
 
         private void MainMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -33,19 +28,18 @@ namespace pdf_combine.Forms
             {
                 case "tsmCombine":
                     {
-                        ctlSplit.Hide();
-                        ctlCombine.Show();
+                        this.ctlSplitUi.Hide();
+                        this.ctlCombineUi.Show();
                         break;
                     }
                 case "tsmSplit":
                     {
-                        ctlCombine.Hide();
-                        ctlSplit.Show();
+                        this.ctlCombineUi.Hide();
+                        this.ctlSplitUi.Show();
                         break;
                     }
                 default:
                     {
-
                         break;
                     }
             }
