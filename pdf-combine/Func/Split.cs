@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using PdfSharp.Pdf;
+﻿using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace pdf_combine.Func
 {
     public class Split
     {
-        public static bool Start(List<int> pageListRows, string inputFilename)
+
+        /// <summary>
+        /// this method splits the given pdf into the listed page ranges.
+        /// </summary>
+        /// <param name="pageListRows">the page list to split out</param>
+        /// <param name="inputFilename">the file to copy pages from</param>
+        /// <returns>true if successful</returns>
+        public static bool Start(IList<int> pageListRows, string inputFilename)
         {
             
             try
             {
-
-
                 string basePath = Path.GetFullPath(inputFilename);
                 string filePath = Path.GetFileName(inputFilename);
                 var outputFolderName = Path.Combine(basePath, filePath);

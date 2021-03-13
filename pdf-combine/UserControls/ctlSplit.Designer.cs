@@ -32,12 +32,14 @@ namespace pdf_combine.UserControls
             this.ofDialog = new System.Windows.Forms.OpenFileDialog();
             this.lblInstructions = new System.Windows.Forms.Label();
             this.btnChoose = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtFileName = new System.Windows.Forms.TextBox();
+            this.txtPageRange = new System.Windows.Forms.TextBox();
             this.lblPageList = new System.Windows.Forms.Label();
             this.lblExample = new System.Windows.Forms.Label();
             this.btnSplit = new System.Windows.Forms.Button();
             this.lblSplit = new System.Windows.Forms.Label();
+            this.lblNumberOfPages = new System.Windows.Forms.Label();
+            this.txtNumOfPages = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // ofDialog
@@ -63,21 +65,21 @@ namespace pdf_combine.UserControls
             this.btnChoose.UseVisualStyleBackColor = true;
             this.btnChoose.Click += new System.EventHandler(this.btnChoose_Click);
             // 
-            // textBox1
+            // txtFileName
             // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(13, 79);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(227, 23);
-            this.textBox1.TabIndex = 2;
+            this.txtFileName.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.txtFileName.Enabled = false;
+            this.txtFileName.Location = new System.Drawing.Point(13, 79);
+            this.txtFileName.Name = "txtFileName";
+            this.txtFileName.Size = new System.Drawing.Size(227, 23);
+            this.txtFileName.TabIndex = 2;
             // 
-            // textBox2
+            // txtPageRange
             // 
-            this.textBox2.Location = new System.Drawing.Point(13, 165);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(227, 23);
-            this.textBox2.TabIndex = 3;
+            this.txtPageRange.Location = new System.Drawing.Point(13, 165);
+            this.txtPageRange.Name = "txtPageRange";
+            this.txtPageRange.Size = new System.Drawing.Size(227, 23);
+            this.txtPageRange.TabIndex = 3;
             // 
             // lblPageList
             // 
@@ -116,18 +118,37 @@ namespace pdf_combine.UserControls
             this.lblSplit.Text = "Your resulting split pages will be ina folder with the same name as the input fil" +
     "e, named for their page.";
             // 
+            // lblNumberOfPages
+            // 
+            this.lblNumberOfPages.AutoSize = true;
+            this.lblNumberOfPages.Location = new System.Drawing.Point(74, 111);
+            this.lblNumberOfPages.Name = "lblNumberOfPages";
+            this.lblNumberOfPages.Size = new System.Drawing.Size(105, 15);
+            this.lblNumberOfPages.TabIndex = 8;
+            this.lblNumberOfPages.Text = "Number of Pages: ";
+            // 
+            // txtNumOfPages
+            // 
+            this.txtNumOfPages.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.txtNumOfPages.Location = new System.Drawing.Point(185, 108);
+            this.txtNumOfPages.Name = "txtNumOfPages";
+            this.txtNumOfPages.Size = new System.Drawing.Size(55, 23);
+            this.txtNumOfPages.TabIndex = 10;
+            // 
             // ctlSplit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.txtNumOfPages);
+            this.Controls.Add(this.lblNumberOfPages);
             this.Controls.Add(this.lblSplit);
             this.Controls.Add(this.btnSplit);
             this.Controls.Add(this.lblExample);
             this.Controls.Add(this.lblPageList);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtFileName);
             this.Controls.Add(this.btnChoose);
             this.Controls.Add(this.lblInstructions);
+            this.Controls.Add(this.txtPageRange);
             this.Name = "ctlSplit";
             this.Size = new System.Drawing.Size(285, 301);
             this.ResumeLayout(false);
@@ -140,11 +161,13 @@ namespace pdf_combine.UserControls
         private System.Windows.Forms.OpenFileDialog ofDialog;
         private System.Windows.Forms.Label lblInstructions;
         private System.Windows.Forms.Button btnChoose;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtFileName;
+        private System.Windows.Forms.TextBox txtPageRange;
         private System.Windows.Forms.Label lblPageList;
         private System.Windows.Forms.Label lblExample;
         private System.Windows.Forms.Button btnSplit;
         private System.Windows.Forms.Label lblSplit;
+        private System.Windows.Forms.Label lblNumberOfPages;
+        private System.Windows.Forms.TextBox txtNumOfPages;
     }
 }
