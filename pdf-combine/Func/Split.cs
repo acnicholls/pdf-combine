@@ -28,17 +28,14 @@ namespace pdf_combine.Func
                 {
                     outputDir.Create();
                 }
-                var oldFile = PdfReader.Open(inputFilename, PdfDocumentOpenMode.ReadOnly);
+                var oldFile = PdfReader.Open(inputFilename, PdfDocumentOpenMode.Import);
 
                 foreach (var page in pageListRows)
                 {
                     var newFileName = Path.Combine(outputDir.FullName, "Page" + (page + 1) + ".pdf");
-                    newPage = new PdfDocument(newFileName);
-                    newPage.Save(newFileName);
-                    newPage.Close();
+                    newPage = new PdfDocument();
                     // reopen in import mode
-                    newPage = PdfReader.Open(newFileName, PdfDocumentOpenMode.Import);                  
-                    var newPdfPage = oldFile.Pages[page];
+                    newPage.AddPage(oldFile.Pages[page]);
                     newPage.Save(newFileName);
                     newPage.Close();
                 }

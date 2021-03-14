@@ -34,6 +34,7 @@ namespace pdf_combine.Forms
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.tsmCombine = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmSplit = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmABout = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,7 +56,8 @@ namespace pdf_combine.Forms
             // 
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmCombine,
-            this.tsmSplit});
+            this.tsmSplit,
+            this.tsmABout});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
             this.MainMenu.Size = new System.Drawing.Size(285, 24);
@@ -74,6 +76,13 @@ namespace pdf_combine.Forms
             this.tsmSplit.Name = "tsmSplit";
             this.tsmSplit.Size = new System.Drawing.Size(42, 20);
             this.tsmSplit.Text = "Split";
+            // 
+            // tsmABout
+            // 
+            this.tsmABout.Name = "tsmABout";
+            this.tsmABout.Size = new System.Drawing.Size(61, 20);
+            this.tsmABout.Text = "About...";
+            this.tsmABout.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // frmMain
             // 
@@ -104,5 +113,6 @@ namespace pdf_combine.Forms
         private System.Windows.Forms.MenuStrip MainMenu;
         private System.Windows.Forms.ToolStripMenuItem tsmCombine;
         private System.Windows.Forms.ToolStripMenuItem tsmSplit;
+        private System.Windows.Forms.ToolStripMenuItem tsmABout;
     }
 }

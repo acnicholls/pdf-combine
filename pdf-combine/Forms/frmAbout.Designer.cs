@@ -81,6 +81,7 @@ namespace pdf_combine.Forms
             this.btnClose.TabIndex = 4;
             this.btnClose.Text = "OK";
             this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // label1
             // 
@@ -96,6 +97,7 @@ namespace pdf_combine.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(511, 222);
+            this.ControlBox = false;
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.lblCopyright);
@@ -103,7 +105,9 @@ namespace pdf_combine.Forms
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.lblDescription);
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmAbout";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "About pdf-combine";
             this.ResumeLayout(false);
             this.PerformLayout();

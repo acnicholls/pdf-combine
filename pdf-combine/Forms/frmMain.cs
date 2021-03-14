@@ -38,6 +38,12 @@ namespace pdf_combine.Forms
                         this.ctlSplitUi.Show();
                         break;
                     }
+                case "tsmABout":
+                    {
+                        var frmAbout = new frmAbout();
+                        frmAbout.ShowDialog();
+                        break;
+                    }
                 default:
                     {
                         break;
