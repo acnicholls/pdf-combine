@@ -74,7 +74,7 @@ namespace pdf_combine.UserControls
                 }
                 else
                 {
-                    regExMatch = @"[^123456789]";
+                    regExMatch = @"[^1234567890]";
                     if (Regex.IsMatch(page, regExMatch))
                     {
                         return false;
