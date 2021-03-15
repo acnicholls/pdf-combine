@@ -10,7 +10,7 @@ namespace pdf_combine.UserControls
 {
     public partial class ctlCombine : UserControl
     {
-        private PdfFileList fileList = new PdfFileList();
+        private PdfFileList fileList; 
         public ctlCombine()
         {
             InitializeComponent();
@@ -18,6 +18,7 @@ namespace pdf_combine.UserControls
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            fileList = new PdfFileList();
             this.lbFileList.Items.Clear();
         }
 
@@ -59,6 +60,8 @@ namespace pdf_combine.UserControls
                 {
                     Combine.Start(rows, sfDialog.FileName);
                     MessageBox.Show(this, "Success");
+                    this.fileList = new PdfFileList();
+                    this.lbFileList.Items.Clear();
                 }
                 catch(Exception x)
                 {
