@@ -69,11 +69,22 @@ namespace pdf_combine.UserControls
                         {
                             return false;
                         }
+                        foreach(var end in rangeEnds)
+                        {
+                            if(Convert.ToInt32(end) < 1 || Convert.ToInt32(end) > Convert.ToInt32(this.txtNumOfPages.Text))
+                            {
+                                return false;
+                            }
+                        }
                     }
 
                 }
                 else
                 {
+                    if(string.IsNullOrWhiteSpace(page))
+                    {
+                        return false;
+                    }
                     regExMatch = @"[^1234567890]";
                     if (Regex.IsMatch(page, regExMatch))
                     {
