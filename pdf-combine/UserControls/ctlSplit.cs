@@ -14,6 +14,15 @@ namespace pdf_combine.UserControls
     {
         private string inputFilename;
         private IList<int> pageList;
+        private enum errorMessage
+        {
+            NoError = 0,
+            MoreThanOneDash = 1,
+            NotNumberDashNumber = 2,
+            LeftNotLowerThanRight = 3,
+            OutsideValidRange = 4,
+            InvalidCharacters = 5
+        }
         public ctlSplit()
         {
             inputFilename = "";
@@ -21,14 +30,49 @@ namespace pdf_combine.UserControls
             InitializeComponent();
         }
 
-        private bool validateBtnSplitText(string inputString)
+        private string errorMessageString(errorMessage inputError)
+        {
+            switch(inputError)
+            {
+                case errorMessage.NoError:
+                    {
+                        return "No Error.";
+                    }
+                case errorMessage.MoreThanOneDash:
+                    {
+                        return "More than one dash present in input value.";
+                    }
+                case errorMessage.NotNumberDashNumber:
+                    {
+                        return "The input string is not in the expected format.";
+                    }
+                case errorMessage.LeftNotLowerThanRight:
+                    {
+                        return "The left number is not lower than the right.";
+                    }
+                case errorMessage.OutsideValidRange:
+                    {
+                        return "You have chosen a number greater than the number of pages in the selected file.";
+                    }
+                case errorMessage.InvalidCharacters:
+                    {
+                        return "You have entered invalid characters.";
+                    }
+                default:
+                    {
+                        return "unknown value";
+                    }
+            }
+        }
+
+        private errorMessage validateBtnSplitText(string inputString)
         {
             // make sure we only have expected characters
             //string validChars = @"1234567890\-,";
             string regExMatch = @"[^1234567890\-,]";
             if (Regex.IsMatch(inputString, regExMatch))
             {
-                return false;
+                return errorMessage.InvalidCharacters;
             }
             // check for invalid characters in each range
             var pageRanges = inputString.Split(',');
@@ -37,43 +81,33 @@ namespace pdf_combine.UserControls
                 if (page.Length > 1)
                 {
                     var onlyOneDash = true;
-                    var noCommas = true;
                     // only one dash per range
                     if (page.Count(c => c.ToString() == "-") > 1)
                     {
-                        return false;
+                        return errorMessage.InvalidCharacters;
                     }
                     else
                     {
                         onlyOneDash = true;
                     }
-                    // no commas allowed in a range
-                    if (page.Any(c => c.ToString() == ","))
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        noCommas = true;
-                    }
-                    if (onlyOneDash && noCommas)
+                    if (onlyOneDash)
                     {
                         // check if it's number-dash-number
                         var regexMatch = @"\d+\-\d+";
                         if (!Regex.IsMatch(page, regexMatch))
                         {
-                            return false;
+                            return errorMessage.NotNumberDashNumber;
                         }
                         var rangeEnds = page.Split("-");
                         if(Convert.ToInt32(rangeEnds[0]) > Convert.ToInt32(rangeEnds[1]))
                         {
-                            return false;
+                            return errorMessage.LeftNotLowerThanRight;
                         }
                         foreach(var end in rangeEnds)
                         {
                             if(Convert.ToInt32(end) < 1 || Convert.ToInt32(end) > Convert.ToInt32(this.txtNumOfPages.Text))
                             {
-                                return false;
+                                return errorMessage.OutsideValidRange;
                             }
                         }
                     }
@@ -83,17 +117,17 @@ namespace pdf_combine.UserControls
                 {
                     if(string.IsNullOrWhiteSpace(page))
                     {
-                        return false;
+                        return errorMessage.InvalidCharacters;
                     }
                     regExMatch = @"[^1234567890]";
                     if (Regex.IsMatch(page, regExMatch))
                     {
-                        return false;
+                        return errorMessage.InvalidCharacters;
                     }
                 }
             }
 
-            return true;
+            return errorMessage.NoError;
         }
 
         private void btnSplit_Click(object sender, EventArgs e)
@@ -109,7 +143,9 @@ namespace pdf_combine.UserControls
                 MessageBox.Show("You must choose pages to copy.");
                 return;
             }
-            if (validateBtnSplitText(pageRange))
+            var validationReult = validateBtnSplitText(pageRange);
+            
+            if (validationReult == errorMessage.NoError)
             {
                 var pageRanges = pageRange.Split(',');
                 foreach (var pageRequest in pageRanges)
@@ -124,12 +160,6 @@ namespace pdf_combine.UserControls
                     }
                     else
                     {
-                        if (Convert.ToInt32(pageRequest) > Convert.ToInt32(this.txtNumOfPages.Text))
-                        {
-                            MessageBox.Show("You have selected a apge outside the valid range.");
-                            pageList.Clear();
-                            return;
-                        }
                         pageList.Add(Convert.ToInt32(pageRequest) - 1);
                     }
                 }
@@ -149,7 +179,7 @@ namespace pdf_combine.UserControls
             }
             else
             {
-                MessageBox.Show("You have entered invalid characters, please try again.");
+                MessageBox.Show(errorMessageString(validationReult), "invalid page list");
                 return;
             }
         }
