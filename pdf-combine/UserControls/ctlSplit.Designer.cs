@@ -151,6 +151,7 @@ namespace pdf_combine.UserControls
             this.Controls.Add(this.txtPageRange);
             this.Name = "ctlSplit";
             this.Size = new System.Drawing.Size(285, 301);
+            this.Load += new System.EventHandler(this.ctlSplit_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -131,7 +131,7 @@ namespace pdf_combine.UserControls
             this.Controls.Add(this.lbFileList);
             this.Name = "ctlCombine";
             this.Size = new System.Drawing.Size(285, 301);
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Load += new System.EventHandler(this.ctlCombine_Load);
             this.ResumeLayout(false);
 
         }

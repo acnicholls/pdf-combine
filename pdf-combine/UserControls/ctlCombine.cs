@@ -8,20 +8,39 @@ using pdf_combine.Func;
 
 namespace pdf_combine.UserControls
 {
+    /// <summary>
+    /// this control handles the UI components for Combining PDF files.
+    /// </summary>
     public partial class ctlCombine : UserControl
     {
         private PdfFileList fileList; 
+
+        /// <summary>
+        /// the main ctor
+        /// </summary>
         public ctlCombine()
         {
             InitializeComponent();
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        /// <summary>
+        /// performs private variable initialization
+        /// </summary>
+        /// <param name="sender">the form</param>
+        /// <param name="e">event arguments</param>
+        private void ctlCombine_Load(object sender, EventArgs e)
         {
             fileList = new PdfFileList();
             this.lbFileList.Items.Clear();
         }
 
+        /// <summary>
+        /// handles events when the user clicks "Add" button
+        /// opens the "File Open Dialog"
+        /// allows the user to add file(s) to the list
+        /// </summary>
+        /// <param name="sender">the button</param>
+        /// <param name="e">event arguments</param>
         private void btnAdd_Click(object sender, EventArgs e)
         {
             ofDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -42,6 +61,12 @@ namespace pdf_combine.UserControls
             }
         }
 
+        /// <summary>
+        /// handles the event when the user clicks "Combine" button
+        /// validates the list and starts the combine function
+        /// </summary>
+        /// <param name="sender">the button</param>
+        /// <param name="e">event arguments</param>
         private void btnCombine_Click(object sender, EventArgs e)
         {
             sfDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -70,6 +95,12 @@ namespace pdf_combine.UserControls
             }
         }
 
+        /// <summary>
+        /// handles events when the user clicks the "Move Up" button
+        /// moves file up one place in the file order
+        /// </summary>
+        /// <param name="sender">the button</param>
+        /// <param name="e">event arguments</param>
         private void btnOrderUp_Click(object sender, EventArgs e)
         {
             var selectedRow = GetSelectedItem();
@@ -83,6 +114,12 @@ namespace pdf_combine.UserControls
             this.lbFileList.SelectedIndex = selectedIndex - 1;
         }
 
+        /// <summary>
+        /// handles the event when the user clicks the "Move Down" button
+        /// moves file down one place in the file order
+        /// </summary>
+        /// <param name="sender">the button</param>
+        /// <param name="e">event arguments</param>
         private void btnOrderDown_Click(object sender, EventArgs e)
         {
             var selectedRow = GetSelectedItem();
@@ -103,12 +140,19 @@ namespace pdf_combine.UserControls
             ReorderItems();
         }
 
+        /// <summary>
+        /// returns the currently select item in the list
+        /// </summary>
+        /// <returns>the row in the data backing the listbox</returns>
         private PdfFileList.FileListRow GetSelectedItem()
         {
             var selectedRow = this.lbFileList.SelectedItem;
             return (PdfFileList.FileListRow)selectedRow;
         }
 
+        /// <summary>
+        /// resets the order of the items in the list
+        /// </summary>
         private void ReorderItems()
         {
             var x = 0;
@@ -121,12 +165,20 @@ namespace pdf_combine.UserControls
             AssignListContent();
         }
 
+        /// <summary>
+        /// describes the direction a file must travel in the list
+        /// </summary>
         private enum MovementDirection
         {
             Up,
             Down
         }
 
+        /// <summary>
+        /// override for item ordering, used when moving an item up or down
+        /// </summary>
+        /// <param name="direction">the movement direction of the selected item</param>
+        /// <param name="selectedRow">the corresponding row in the data to move</param>
         private void ReorderItems(MovementDirection direction, PdfFileList.FileListRow selectedRow)
         {
             var currentPosition = selectedRow.order;
@@ -152,6 +204,9 @@ namespace pdf_combine.UserControls
             AssignListContent();
         }
 
+        /// <summary>
+        /// clears and re-assigns the listbox's content
+        /// </summary>
         private void AssignListContent()
         {
             this.lbFileList.Sorted = false;

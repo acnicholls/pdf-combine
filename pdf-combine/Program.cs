@@ -4,6 +4,9 @@ using pdf_combine.Forms;
 
 namespace pdf_combine
 {
+    /// <summary>
+    /// the main class for a .Net application
+    /// </summary>
     static class Program
     {
         /// <summary>

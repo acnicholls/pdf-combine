@@ -1,27 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using pdf_combine.Func;
-using pdf_combine.UserControls;
 
 namespace pdf_combine.Forms
 {
+    /// <summary>
+    /// this form is the main form of the application
+    /// </summary>
     public partial class frmMain : Form
     {
+        /// <summary>
+        /// the main ctor
+        /// </summary>
         public frmMain()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// handles the load event
+        /// </summary>
+        /// <param name="sender">the form</param>
+        /// <param name="e">event arguments</param>
         private void frmMain_Load(object sender, EventArgs e)
         {
             this.ctlSplitUi.Hide();
             this.ctlCombineUi.Show();
         }
 
+        /// <summary>
+        /// handles a user click on the main menu
+        /// </summary>
+        /// <param name="sender">the menu strip</param>
+        /// <param name="e">event arguments</param>
         private void MainMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             switch (e.ClickedItem.Name)

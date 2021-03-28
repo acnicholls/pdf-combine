@@ -10,11 +10,15 @@ using PdfSharp.Pdf.IO;
 
 namespace pdf_combine.UserControls
 {
+    /// <summary>
+    /// this control handles the UI components for Splitting PDF files.
+    /// </summary>
     public partial class ctlSplit : UserControl
     {
         private string inputFilename;
         private IList<int> pageList;
-        private enum errorMessage
+        private ErrorMessage errorMessage;
+        private enum ErrorMessage
         {
             NoError = 0,
             MoreThanOneDash = 1,
@@ -23,38 +27,61 @@ namespace pdf_combine.UserControls
             OutsideValidRange = 4,
             InvalidCharacters = 5
         }
+
+        /// <summary>
+        /// the main ctor
+        /// </summary>
         public ctlSplit()
         {
-            inputFilename = "";
-            pageList = new List<int>();
             InitializeComponent();
         }
 
-        private string errorMessageString(errorMessage inputError)
+        /// <summary>
+        /// performs private variable initialization
+        /// </summary>
+        /// <param name="sender">the form</param>
+        /// <param name="e">event arguments</param>
+        private void ctlSplit_Load(object sender, EventArgs e)
+        {
+            inputFilename = "";
+            pageList = new List<int>();
+            errorMessage = ErrorMessage.NoError;
+            this.txtFileName.Text = "";
+            this.txtNumOfPages.Text = "";
+            this.txtPageRange.Text = "";
+            this.ofDialog = new OpenFileDialog();
+        }
+
+        /// <summary>
+        /// determines the message to return to the user, based on the input error type
+        /// </summary>
+        /// <param name="inputError">the error</param>
+        /// <returns>a string error message</returns>
+        private string errorMessageString(ErrorMessage inputError)
         {
             switch(inputError)
             {
-                case errorMessage.NoError:
+                case ErrorMessage.NoError:
                     {
                         return "No Error.";
                     }
-                case errorMessage.MoreThanOneDash:
+                case ErrorMessage.MoreThanOneDash:
                     {
                         return "More than one dash present in input value.";
                     }
-                case errorMessage.NotNumberDashNumber:
+                case ErrorMessage.NotNumberDashNumber:
                     {
                         return "The input string is not in the expected format.";
                     }
-                case errorMessage.LeftNotLowerThanRight:
+                case ErrorMessage.LeftNotLowerThanRight:
                     {
                         return "The left number is not lower than the right.";
                     }
-                case errorMessage.OutsideValidRange:
+                case ErrorMessage.OutsideValidRange:
                     {
                         return "You have chosen a number greater than the number of pages in the selected file.";
                     }
-                case errorMessage.InvalidCharacters:
+                case ErrorMessage.InvalidCharacters:
                     {
                         return "You have entered invalid characters.";
                     }
@@ -65,14 +92,19 @@ namespace pdf_combine.UserControls
             }
         }
 
-        private errorMessage validateBtnSplitText(string inputString)
+        /// <summary>
+        /// validates the input from the user when they press the Split Button.
+        /// </summary>
+        /// <param name="inputString">the requesteed pages to extract</param>
+        /// <returns>an errorMessage enum value</returns>
+        private ErrorMessage validateBtnSplitText(string inputString)
         {
             // make sure we only have expected characters
             //string validChars = @"1234567890\-,";
             string regExMatch = @"[^1234567890\-,]";
             if (Regex.IsMatch(inputString, regExMatch))
             {
-                return errorMessage.InvalidCharacters;
+                return ErrorMessage.InvalidCharacters;
             }
             // check for invalid characters in each range
             var pageRanges = inputString.Split(',');
@@ -84,7 +116,7 @@ namespace pdf_combine.UserControls
                     // only one dash per range
                     if (page.Count(c => c.ToString() == "-") > 1)
                     {
-                        return errorMessage.InvalidCharacters;
+                        return ErrorMessage.InvalidCharacters;
                     }
                     else
                     {
@@ -96,18 +128,18 @@ namespace pdf_combine.UserControls
                         var regexMatch = @"\d+\-\d+";
                         if (!Regex.IsMatch(page, regexMatch))
                         {
-                            return errorMessage.NotNumberDashNumber;
+                            return ErrorMessage.NotNumberDashNumber;
                         }
                         var rangeEnds = page.Split("-");
                         if(Convert.ToInt32(rangeEnds[0]) > Convert.ToInt32(rangeEnds[1]))
                         {
-                            return errorMessage.LeftNotLowerThanRight;
+                            return ErrorMessage.LeftNotLowerThanRight;
                         }
                         foreach(var end in rangeEnds)
                         {
                             if(Convert.ToInt32(end) < 1 || Convert.ToInt32(end) > Convert.ToInt32(this.txtNumOfPages.Text))
                             {
-                                return errorMessage.OutsideValidRange;
+                                return ErrorMessage.OutsideValidRange;
                             }
                         }
                     }
@@ -117,19 +149,25 @@ namespace pdf_combine.UserControls
                 {
                     if(string.IsNullOrWhiteSpace(page))
                     {
-                        return errorMessage.InvalidCharacters;
+                        return ErrorMessage.InvalidCharacters;
                     }
                     regExMatch = @"[^1234567890]";
                     if (Regex.IsMatch(page, regExMatch))
                     {
-                        return errorMessage.InvalidCharacters;
+                        return ErrorMessage.InvalidCharacters;
                     }
                 }
             }
 
-            return errorMessage.NoError;
+            return ErrorMessage.NoError;
         }
 
+        /// <summary>
+        /// handles the event when the user presses the "Split" button
+        /// validates the input text and starts the extraction process
+        /// </summary>
+        /// <param name="sender">the button</param>
+        /// <param name="e">event arguments</param>
         private void btnSplit_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(inputFilename))
@@ -145,7 +183,7 @@ namespace pdf_combine.UserControls
             }
             var validationReult = validateBtnSplitText(pageRange);
             
-            if (validationReult == errorMessage.NoError)
+            if (validationReult == ErrorMessage.NoError)
             {
                 var pageRanges = pageRange.Split(',');
                 foreach (var pageRequest in pageRanges)
@@ -175,7 +213,6 @@ namespace pdf_combine.UserControls
                 {
                     MessageBox.Show(x.Message, "Something went wrong...");
                 }
-
             }
             else
             {
@@ -184,6 +221,12 @@ namespace pdf_combine.UserControls
             }
         }
 
+        /// <summary>
+        /// handles the event when the user presses the "Choose..." button
+        /// opens the "File Open Dialog" and allows the user to choose a PDF file
+        /// </summary>
+        /// <param name="sender">the button</param>
+        /// <param name="e">event arguments</param>
         private void btnChoose_Click(object sender, EventArgs e)
         {
             ofDialog.Title = "Choose the PDF to copy pages from";
@@ -207,5 +250,6 @@ namespace pdf_combine.UserControls
 
             }
         }
+
     }
 }
