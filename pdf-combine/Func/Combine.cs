@@ -6,10 +6,16 @@ using System.Data;
 using System.IO;
 using System.Linq;
 
-namespace pdf_combine
+namespace pdf_combine.Func
 {
     public class Combine
     {
+        /// <summary>
+        /// this method combines all the listed pdf files into one file, in the order they appear in the list
+        /// </summary>
+        /// <param name="fileListRows">the information regarding the pdf files to combine</param>
+        /// <param name="outputFilename">the name of the combined file</param>
+        /// <returns></returns>
         public static bool Start(List<PdfFileList.FileListRow> fileListRows, string outputFilename)
         {
             try
@@ -27,7 +33,7 @@ namespace pdf_combine
             }
             catch(Exception x)
             {
-                throw x;
+                return false;
             }
             return true;
         }

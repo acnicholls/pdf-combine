@@ -8,10 +8,12 @@
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
     <Authors>acnicholls</Authors>
     <Company>acnicholls</Company>
-    <Description>combines selected pdf files into one pdf file</Description>
+    <Description>combines selected pdf files into one pdf file and extracts a range of pages froma larger file.</Description>
     <Copyright>acnicholls</Copyright>
     <RepositoryUrl>www.github.com/acnicholls/pdf-combine</RepositoryUrl>
     <StartupObject>pdf_combine.Program</StartupObject>
+    <Version>2.0.0</Version>
+    <PackageReleaseNotes>adds extract pages function</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +26,9 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PdfFileList.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\ctlCombine.cs">
+      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
 
