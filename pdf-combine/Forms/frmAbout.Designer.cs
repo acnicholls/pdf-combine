@@ -41,7 +41,7 @@ namespace pdf_combine.Forms
             // 
             this.lblDescription.Location = new System.Drawing.Point(12, 20);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(487, 51);
+            this.lblDescription.Size = new System.Drawing.Size(487, 24);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Text = "DESCRIPTION: This program combines and splits pdf files to a user\'s specification" +
     ".";
@@ -49,7 +49,7 @@ namespace pdf_combine.Forms
             // lblVersion
             // 
             this.lblVersion.AutoSize = true;
-            this.lblVersion.Location = new System.Drawing.Point(12, 56);
+            this.lblVersion.Location = new System.Drawing.Point(12, 45);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(87, 15);
             this.lblVersion.TabIndex = 1;
@@ -58,7 +58,7 @@ namespace pdf_combine.Forms
             // lblAuthor
             // 
             this.lblAuthor.AutoSize = true;
-            this.lblAuthor.Location = new System.Drawing.Point(12, 85);
+            this.lblAuthor.Location = new System.Drawing.Point(12, 65);
             this.lblAuthor.Name = "lblAuthor";
             this.lblAuthor.Size = new System.Drawing.Size(106, 15);
             this.lblAuthor.TabIndex = 2;
@@ -67,7 +67,7 @@ namespace pdf_combine.Forms
             // lblCopyright
             // 
             this.lblCopyright.AutoSize = true;
-            this.lblCopyright.Location = new System.Drawing.Point(12, 117);
+            this.lblCopyright.Location = new System.Drawing.Point(12, 85);
             this.lblCopyright.Name = "lblCopyright";
             this.lblCopyright.Size = new System.Drawing.Size(93, 15);
             this.lblCopyright.TabIndex = 3;
@@ -75,7 +75,7 @@ namespace pdf_combine.Forms
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(403, 160);
+            this.btnClose.Location = new System.Drawing.Point(387, 105);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 4;
@@ -86,7 +86,7 @@ namespace pdf_combine.Forms
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 198);
+            this.label1.Location = new System.Drawing.Point(12, 105);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(197, 15);
             this.label1.TabIndex = 5;
@@ -96,7 +96,7 @@ namespace pdf_combine.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(511, 222);
+            this.ClientSize = new System.Drawing.Size(478, 139);
             this.ControlBox = false;
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnClose);

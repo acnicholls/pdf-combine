@@ -95,9 +95,9 @@ namespace pdf_combine.UserControls
             this.lblExample.AutoSize = true;
             this.lblExample.Location = new System.Drawing.Point(13, 195);
             this.lblExample.Name = "lblExample";
-            this.lblExample.Size = new System.Drawing.Size(93, 15);
+            this.lblExample.Size = new System.Drawing.Size(84, 15);
             this.lblExample.TabIndex = 5;
-            this.lblExample.Text = "ex: 1, 2.4, 7-8, 10";
+            this.lblExample.Text = "ex: 1,2,4,7-8,10";
             // 
             // btnSplit
             // 
