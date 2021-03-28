@@ -76,14 +76,14 @@ namespace pdf_combine.UserControls
             // 
             // txtPageRange
             // 
-            this.txtPageRange.Location = new System.Drawing.Point(13, 165);
+            this.txtPageRange.Location = new System.Drawing.Point(13, 173);
             this.txtPageRange.Name = "txtPageRange";
             this.txtPageRange.Size = new System.Drawing.Size(227, 23);
             this.txtPageRange.TabIndex = 3;
             // 
             // lblPageList
             // 
-            this.lblPageList.Location = new System.Drawing.Point(13, 129);
+            this.lblPageList.Location = new System.Drawing.Point(13, 137);
             this.lblPageList.Name = "lblPageList";
             this.lblPageList.Size = new System.Drawing.Size(260, 33);
             this.lblPageList.TabIndex = 4;
@@ -93,7 +93,7 @@ namespace pdf_combine.UserControls
             // lblExample
             // 
             this.lblExample.AutoSize = true;
-            this.lblExample.Location = new System.Drawing.Point(13, 195);
+            this.lblExample.Location = new System.Drawing.Point(13, 200);
             this.lblExample.Name = "lblExample";
             this.lblExample.Size = new System.Drawing.Size(84, 15);
             this.lblExample.TabIndex = 5;
@@ -111,12 +111,12 @@ namespace pdf_combine.UserControls
             // 
             // lblSplit
             // 
-            this.lblSplit.Location = new System.Drawing.Point(13, 210);
+            this.lblSplit.Location = new System.Drawing.Point(13, 222);
             this.lblSplit.Name = "lblSplit";
-            this.lblSplit.Size = new System.Drawing.Size(260, 56);
+            this.lblSplit.Size = new System.Drawing.Size(260, 39);
             this.lblSplit.TabIndex = 7;
-            this.lblSplit.Text = "Your resulting split pages will be ina folder with the same name as the input fil" +
-    "e, named for their page.";
+            this.lblSplit.Text = "Your resulting split pages will be in a folder with the same name as the input fi" +
+    "le, named Page#.";
             // 
             // lblNumberOfPages
             // 
