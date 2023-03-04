@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace pdf_combine.Forms
@@ -48,7 +48,7 @@ namespace pdf_combine.Forms
                         this.ctlSplitUi.Show();
                         break;
                     }
-                case "tsmABout":
+                case "tsmAbout":
                     {
                         var frmAbout = new frmAbout();
                         frmAbout.ShowDialog();
