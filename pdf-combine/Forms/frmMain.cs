@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Windows.Forms;
+using Serilog;
 
 namespace pdf_combine.Forms
 {
@@ -34,6 +35,7 @@ namespace pdf_combine.Forms
         /// <param name="e">event arguments</param>
         private void MainMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
+			Log.Logger.Information("Starting MainMenu_ItemClicked...{0} was clicked.", e.ClickedItem.Text);
             switch (e.ClickedItem.Name)
             {
                 case "tsmCombine":
@@ -59,6 +61,7 @@ namespace pdf_combine.Forms
                         break;
                     }
             }
-        }
+			Log.Logger.Information("Completed MainMenu_ItemClicked.");
+		}
     }
 }
