@@ -1,0 +1,53 @@
+name: build-and-upload-portal-binaries
+
+on:
+  workflow_call:
+    inputs:
+      build-type:
+        required: true
+        type: string
+      publish-os:
+        required: true
+        type: string
+      dotnet-version:
+        required: true
+        type: string
+
+jobs:
+  build-and-deploy-portal-binaries:
+    if: ${{ success() }}
+    runs-on: self-hosted
+    steps:
+      # setup nuget executable
+      - name: setup Nuget
+        id: setup-nuget
+        uses: nuget/setup-nuget@v1
+
+      # restore nuget dependencies
+      - name: run nuget restore
+        id: run-nuget-restore
+        working-directory: .
+        run: nuget restore .\pdf-combine.sln
+
+      # publish the application
+      - name: Publish Binaries
+        id: publish-binaries-folder-deploy
+        shell: cmd
+        working-directory: pdf-combine
+        timeout-minutes: 10
+        run: msbuild pdf-combine.csproj "/p:Platform=AnyCPU;Configuration=${{ inputs.build-type }}Portal;PublishProfile=FolderProfile;DeployOnBuild=true"
+
+      - name: Compress Published Files
+        id: compress-published-build
+        shell: cmd
+        working-directory: pdf-combine\bin\${{ inputs.build-type }}\${{ inputs.dotnet-version }}-${{ inputs.publish-os }}\app.publish
+        run: 7z.exe a pdf-combine-published.7z .\*
+
+      # upload the user portal artifact
+      - name: Upload Portal Binaries
+        id: upload-portal-binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-portal-installation-artifact
+          path: pdf-combine\bin\${{ inputs.build-type }}\${{ inputs.dotnet-version }}-${{ inputs.publish-os }}\app.publish\pdf-combine-published.7z
+          retention-days: 5

@@ -1,0 +1,17 @@
+name: prepare-environment
+
+on:
+  workflow_call:
+
+jobs:
+  prepare-environment:
+    runs-on: self-hosted
+    steps:
+      # get the latest code from the repo
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # display environment variables, for audit purposes
+      - name: Check Environment
+        run: |
+          dir env:

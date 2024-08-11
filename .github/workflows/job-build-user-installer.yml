@@ -1,0 +1,61 @@
+name: build-user-installer
+
+on:
+  workflow_call:
+    inputs:
+      build-type:
+        required: true
+        type: string
+      installer-filename:
+        required: true
+        type: string
+jobs:
+  build-user-installer:
+    if: ${{ success() }}
+    runs-on: self-hosted
+    steps:
+      # setup nuget executable
+      - name: setup Nuget
+        id: setup-nuget
+        uses: nuget/setup-nuget@v1
+
+      # restore nuget dependencies
+      - name: run nuget restore
+        id: run-nuget-restore
+        working-directory: .
+        run: nuget restore .\pdf-combine.sln
+
+      # builds the custom-installer and user-interface before it's own cab
+      - name: Build User Setup MSI
+        id: build-user-interface-setup
+        shell: cmd
+        working-directory: .
+        timeout-minutes: 10
+        continue-on-error: true
+        run: devenv.exe .\pdf-combine.sln /Build ${{ inputs.build-type }} /Project pdf-combine /Log InstallerBuild.log /Out InstallerBuild.log /NoSplash
+
+      # send build log to github output
+      - name: Upload Build Log
+        id: upload-build-log
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-user-installer-log
+          path: .\InstallerBuild.log
+          retention-days: 5
+
+      - name: Upload Check
+        id: upload-check
+        if: ${{ steps.build-user-interface-setup.outcome != 'success' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.setFailed('user-installer build failed, no sense continuing...')
+
+      - name: Upload Artifact
+        id: upload-installer
+        if: ${{ steps.build-user-interface-setup.outcome == 'success' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-user-installer-artifact
+          path: FolderSizeCalcSetup\${{ inputs.build-type }}\${{ inputs.installer-filename }}
+          retention-days: 5
