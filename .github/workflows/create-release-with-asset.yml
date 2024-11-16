@@ -78,7 +78,7 @@ jobs:
           /Log InstallerBuild.log \
           /Out InstallerBuild.log \
           /NoSplash \
-          /p:AssemblyVersion=${{ needs.create-release.outputs.current-version }}
+          /p:AssemblyVersion=${{ needs.create-release.outputs.current-version }} \
           /p:FileAssemblyVersion=${{ needs.create-release.outputs.current-version }}
 
       # send build log to github output
