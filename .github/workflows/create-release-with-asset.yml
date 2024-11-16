@@ -1,7 +1,7 @@
 # This script creates a release, builds the master branch and uploads the build
 # results to both github actions store and the Release
 name: create-release-with-asset
-run-name: Release for ${{ github.event_name }} triggered by ${{ github.triggering_actor }}
+run-name: Tag % Release for ${{ github.event_name }} triggered by ${{ github.triggering_actor }}
 concurrency:
   group: release-create
   cancel-in-progress: true
@@ -72,13 +72,13 @@ jobs:
         timeout-minutes: 10
         continue-on-error: true
         run: |
-          devenv .\pdf-combine.sln \
-          /Build RELEASE \
-          /Project pdf-combine-setup \
-          /Log InstallerBuild.log \
-          /Out InstallerBuild.log \
-          /NoSplash \
-          /p:AssemblyVersion=${{ needs.create-release.outputs.current-version }} \
+          devenv .\pdf-combine.sln ^
+          /Build RELEASE ^
+          /Project pdf-combine-setup ^
+          /Log InstallerBuild.log ^
+          /Out InstallerBuild.log ^
+          /NoSplash ^
+          /p:AssemblyVersion=${{ needs.create-release.outputs.current-version }} ^
           /p:FileAssemblyVersion=${{ needs.create-release.outputs.current-version }}
 
       # send build log to github output
