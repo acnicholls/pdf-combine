@@ -58,6 +58,13 @@ jobs:
       - name: Setup VS Dev Environment
         uses: seanmiddleditch/gha-setup-vsdevenv@v4
 
+      - name: Replace in files
+        uses: richardrigutins/replace-in-files@v2.1.8
+        with:
+          files: '**\**\*.csproj'
+          search-text: "<Version>2.0.0</Version>"
+          replacement-text: "<Version>${{ needs.create-release.outputs.current-version }}</Version>"
+
       # restore nuget dependencies
       - name: run nuget restore
         id: run-nuget-restore
