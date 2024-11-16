@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using pdf_combine.Forms;
+using Serilog;
 
 namespace pdf_combine
 {
@@ -15,7 +16,13 @@ namespace pdf_combine
         [STAThread]
         static void Main()
         {
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+			Log.Logger = new LoggerConfiguration()
+				.MinimumLevel.Debug()
+				.WriteTo.Console()
+				.WriteTo.File("logs/pdf-combine.txt", rollingInterval: RollingInterval.Day)
+				.CreateLogger();
+
+			System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

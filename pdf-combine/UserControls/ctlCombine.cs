@@ -83,14 +83,21 @@ namespace pdf_combine.UserControls
                 }
                 try
                 {
-                    Combine.Start(rows, sfDialog.FileName);
-                    MessageBox.Show(this, "Success");
-                    this.fileList = new PdfFileList();
-                    this.lbFileList.Items.Clear();
+					this.Enabled = false;
+                    if(Combine.Start(rows, sfDialog.FileName))
+					{
+						MessageBox.Show(this, "Success");
+					}
+
+					this.Enabled = true;
                 }
                 catch(Exception x)
                 {
                     MessageBox.Show(this, x.Message, "Something went wrong...");
+					if(!this.Enabled)
+					{
+						this.Enabled = true;
+					}
                 }
             }
         }
