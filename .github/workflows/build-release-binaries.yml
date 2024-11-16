@@ -29,13 +29,62 @@ jobs:
         shell: powershell
         run: echo "installer-filename=${{ env.ENDUSER_INSTALLER_FILE_NAME }}" >> $env:GITHUB_OUTPUT
 
-  prepare-environment:
-    needs: prepare-variables
-    uses: ./.github/workflows/job-prepare-environment.yml
+      # get the latest code from the repo
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-  build-user-installer:
-    uses: ./.github/workflows/job-build-user-installer.yml
-    needs: [prepare-variables, prepare-environment]
-    with:
-      build-type: ${{ needs.prepare-variables.outputs.build-type }}
-      installer-filename: ${{ needs.prepare-variables.outputs.installer-filename }}
+      # display environment variables, for audit purposes
+      - name: Check Environment
+        run: |
+          dir env:
+
+      # setup nuget executable
+      - name: setup Nuget
+        id: setup-nuget
+        uses: nuget/setup-nuget@v1
+
+      # restore nuget dependencies
+      - name: run nuget restore
+        id: run-nuget-restore
+        working-directory: .
+        run: nuget restore .\pdf-combine.sln
+
+      # builds the custom-installer and user-interface before it's own cab
+      - name: Build User Setup MSI
+        id: build-user-interface-setup
+        shell: cmd
+        working-directory: .
+        timeout-minutes: 10
+        continue-on-error: true
+        run: devenv.exe .\pdf-combine.sln \
+          /Build ${{ steps.get-build-type.outputs.build-type }} \
+          /Project pdf-combine-setup \
+          /Log InstallerBuild.log \
+          /Out InstallerBuild.log \
+          /NoSplash
+
+      # send build log to github output
+      - name: Upload Build Log
+        id: upload-build-log
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-user-installer-log
+          path: .\InstallerBuild.log
+          retention-days: 5
+
+      - name: Upload Check
+        id: upload-check
+        if: ${{ steps.build-user-interface-setup.outcome != 'success' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.setFailed('user-installer build failed, no sense continuing...')
+
+      - name: Upload Artifact
+        id: upload-installer
+        if: ${{ steps.build-user-interface-setup.outcome == 'success' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-user-installer-artifact
+          path: pdf-combine-setup\${{ steps.get-build-type.outputs.build-type }}\$${{ steps.get-installer-filename.outputs.installer-filename }}
+          retention-days: 5
