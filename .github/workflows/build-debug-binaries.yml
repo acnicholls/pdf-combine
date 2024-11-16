@@ -87,5 +87,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-user-installer-artifact
-          path: pdf-combine-setup\${{ steps.get-build-type.outputs.build-type }}\$${{ steps.get-installer-filename.outputs.installer-filename }}
+          path: pdf-combine-setup\${{ steps.get-build-type.outputs.build-type }}\${{ steps.get-installer-filename.outputs.installer-filename }}
           retention-days: 5
