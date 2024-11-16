@@ -12,7 +12,7 @@ on:
 jobs:
   build-user-installer:
     if: ${{ success() }}
-    runs-on: self-hosted
+    runs-on: [windows-latest]
     steps:
       # setup nuget executable
       - name: setup Nuget
@@ -32,7 +32,7 @@ jobs:
         working-directory: .
         timeout-minutes: 10
         continue-on-error: true
-        run: devenv.exe .\pdf-combine.sln /Build ${{ inputs.build-type }} /Project pdf-combine /Log InstallerBuild.log /Out InstallerBuild.log /NoSplash
+        run: devenv.exe .\pdf-combine.sln /Build ${{ inputs.build-type }} /Project pdf-combine-setup /Log InstallerBuild.log /Out InstallerBuild.log /NoSplash
 
       # send build log to github output
       - name: Upload Build Log
@@ -57,5 +57,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-user-installer-artifact
-          path: FolderSizeCalcSetup\${{ inputs.build-type }}\${{ inputs.installer-filename }}
+          path: pdf-combine-setup\${{ inputs.build-type }}\${{ inputs.installer-filename }}
           retention-days: 5
