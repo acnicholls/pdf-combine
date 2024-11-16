@@ -10,11 +10,11 @@
 
 ## reason
 
-A friend asked me if I could write her a program that would let her combine her scanned pdf pages into single files. This is the result
+A friend asked me if I could write a program that would allow a user to combine scanned pdf pages into single files. This is the result
 
 ## v2
 
-Later she asked me if I could split her documents into thier separate pages. along came v2
+Later she asked me if I could split documents into a set of separate pages. along came v2
 
 ## v2.0.1
 
