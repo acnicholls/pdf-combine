@@ -4,8 +4,13 @@
 
 [![build-debug-binaries](https://github.com/acnicholls/pdf-combine/actions/workflows/build-debug-binaries.yml/badge.svg)](https://github.com/acnicholls/pdf-combine/actions/workflows/build-debug-binaries.yml)
 
+[![build-release-binaries](https://github.com/acnicholls/pdf-combine/actions/workflows/build-release-binaries.yml/badge.svg)](https://github.com/acnicholls/pdf-combine/actions/workflows/build-release-binaries.yml)
+
+[![create-release-with-asset](https://github.com/acnicholls/pdf-combine/actions/workflows/create-release-with-asset.yml/badge.svg)](https://github.com/acnicholls/pdf-combine/actions/workflows/create-release-with-asset.yml)
+
 ## reason
-A friend asked me if I could write her a program that would let her combine her scanned pdf pages into single files.  This is the result
+
+A friend asked me if I could write her a program that would let her combine her scanned pdf pages into single files. This is the result
 
 ## v2
 
