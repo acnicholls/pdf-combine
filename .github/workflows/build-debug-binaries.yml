@@ -63,7 +63,7 @@ jobs:
         timeout-minutes: 10
         continue-on-error: true
         run: |
-          devenv.exe .\pdf-combine.sln \
+          devenv.exe ".\pdf-combine.sln" \
           /Build ${{ steps.get-build-type.outputs.build-type }} \
           /Project "pdf-combine-setup" \
           /Log InstallerBuild.log \
