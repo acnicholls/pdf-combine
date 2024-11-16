@@ -9,7 +9,7 @@ concurrency:
 on:
   pull_request:
     branches:
-      - master
+      - main
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 env:
