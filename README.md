@@ -16,6 +16,10 @@ A friend asked me if I could write her a program that would let her combine her 
 
 Later she asked me if I could split her documents into thier separate pages. along came v2
 
-## v2.1
+## v2.0.1
+
+I added DevOps workflows to automatically create releases and a windows installer setup MSI to make it easier for users to add to their machine.
+
+## v2.1 - planned
 
 I fixed a few bugs and cleaned up the split page list user input validation and parsing methods
