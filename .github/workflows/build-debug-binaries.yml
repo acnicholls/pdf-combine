@@ -53,7 +53,7 @@ jobs:
       - name: run nuget restore
         id: run-nuget-restore
         working-directory: .
-        run: nuget restore .\pdf-combine.sln
+        run: nuget restore ".\pdf-combine.sln"
 
       # builds the custom-installer and user-interface before it's own cab
       - name: Build User Setup MSI
@@ -62,13 +62,7 @@ jobs:
         working-directory: .
         timeout-minutes: 10
         continue-on-error: true
-        run: |
-          devenv.exe ".\pdf-combine.sln" \
-          /Build ${{ steps.get-build-type.outputs.build-type }} \
-          /Project "pdf-combine-setup" \
-          /Log InstallerBuild.log \
-          /Out InstallerBuild.log \
-          /NoSplash
+        run: devenv.exe .\pdf-combine.sln /Build ${{ steps.get-build-type.outputs.build-type }} /Project pdf-combine-setup /Log InstallerBuild.log /Out InstallerBuild.log /NoSplash
 
       # send build log to github output
       - name: Upload Build Log
