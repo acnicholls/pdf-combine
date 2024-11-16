@@ -1,7 +1,7 @@
 # This script creates a release, builds the master branch and uploads the build
 # results to both github actions store and the Release
 name: create-release-with-asset
-run-name: Tag % Release for ${{ github.event_name }} triggered by ${{ github.triggering_actor }}
+run-name: Tag & Release for ${{ github.event_name }} triggered by ${{ github.triggering_actor }}
 concurrency:
   group: release-create
   cancel-in-progress: true
