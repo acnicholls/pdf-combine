@@ -72,7 +72,7 @@ jobs:
         timeout-minutes: 10
         continue-on-error: true
         run: |
-          devenv.exe .\pdf-combine.sln \
+          devenv .\pdf-combine.sln \
           /Build RELEASE \
           /Project pdf-combine-setup \
           /Log InstallerBuild.log \

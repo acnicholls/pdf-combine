@@ -31,7 +31,7 @@ jobs:
 
       # get the latest code from the repo
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
         # add msbuild and devenv to the PATH variable
       - name: Setup MSBuild
@@ -62,7 +62,7 @@ jobs:
         working-directory: .
         timeout-minutes: 10
         continue-on-error: true
-        run: devenv.exe .\pdf-combine.sln /Build ${{ steps.get-build-type.outputs.build-type }} /Project pdf-combine-setup /Log InstallerBuild.log /Out InstallerBuild.log /NoSplash
+        run: devenv .\pdf-combine.sln /Build ${{ steps.get-build-type.outputs.build-type }} /Project pdf-combine-setup /Log InstallerBuild.log /Out InstallerBuild.log /NoSplash
 
       # send build log to github output
       - name: Upload Build Log
