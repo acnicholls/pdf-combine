@@ -39,11 +39,19 @@
         "InstallerBootstrapper" = "3:2"
             "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
             {
-            "Enabled" = "11:TRUE"
+            "Enabled" = "11:FALSE"
             "PromptEnabled" = "11:TRUE"
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -168,7 +176,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:pdf-combine"
         "ProductCode" = "8:{43F8CAFF-9B6C-4218-9174-55ECCDD366A7}"
-        "PackageCode" = "8:{60C09A9B-BF5C-45C7-8114-6E24D528958F}"
+        "PackageCode" = "8:{6C62A589-51EC-49CC-BDCF-DA968994F6B3}"
         "UpgradeCode" = "8:{FFA47253-A2A1-49DB-9C78-295E5576A812}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -703,7 +711,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_1465BA82C5DF4A5F8B566A9AC0D3C001"
             {
-            "SourcePath" = "8:..\\pdf-combine\\obj\\Debug\\net5.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\pdf-combine\\obj\\Release\\net5.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B620AED0F6AF4BC0B7B60B6BCB147685"

@@ -65,7 +65,7 @@ jobs:
         run: |
           devenv.exe .\pdf-combine.sln \
           /Build ${{ steps.get-build-type.outputs.build-type }} \
-          /Project pdf-combine-setup \
+          /Project "pdf-combine-setup" \
           /Log InstallerBuild.log \
           /Out InstallerBuild.log \
           /NoSplash
