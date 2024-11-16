@@ -8,7 +8,7 @@ concurrency:
 on:
   push:
     branches:
-      - master
+      - main
     paths-ignore:
       - README.md
       - CHANGELOG.md # Should never be edited anyway
