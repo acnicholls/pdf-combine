@@ -16,7 +16,7 @@ env:
   BUILD_TYPE: Release
   ENDUSER_INSTALLER_FILE_NAME: pdf-combine-setup.msi
 jobs:
-  prepare-variables:
+  build-release-binaries:
     runs-on: windows-latest
     outputs:
       build-type: ${{ steps.get-build-type.outputs.build-type }}
@@ -62,7 +62,8 @@ jobs:
         working-directory: .
         timeout-minutes: 10
         continue-on-error: true
-        run: devenv.exe .\pdf-combine.sln \
+        run: |
+          devenv.exe .\pdf-combine.sln \
           /Build ${{ steps.get-build-type.outputs.build-type }} \
           /Project pdf-combine-setup \
           /Log InstallerBuild.log \
