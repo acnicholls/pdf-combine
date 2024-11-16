@@ -77,9 +77,7 @@ jobs:
           /Project pdf-combine-setup ^
           /Log InstallerBuild.log ^
           /Out InstallerBuild.log ^
-          /NoSplash ^
-          /p:AssemblyVersion=${{ needs.create-release.outputs.current-version }} ^
-          /p:FileAssemblyVersion=${{ needs.create-release.outputs.current-version }}
+          /NoSplash
 
       # send build log to github output
       - name: Upload Build Log
