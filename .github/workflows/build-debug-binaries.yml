@@ -62,7 +62,13 @@ jobs:
         working-directory: .
         timeout-minutes: 10
         continue-on-error: true
-        run: devenv .\pdf-combine.sln /Build ${{ steps.get-build-type.outputs.build-type }} /Project pdf-combine-setup /Log InstallerBuild.log /Out InstallerBuild.log /NoSplash
+        run: |
+          devenv .\pdf-combine.sln ^ 
+          /Build ${{ steps.get-build-type.outputs.build-type }} ^
+          /Project pdf-combine-setup ^
+          /Log InstallerBuild.log ^
+          /Out InstallerBuild.log ^
+          /NoSplash
 
       # send build log to github output
       - name: Upload Build Log
