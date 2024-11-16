@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using Serilog;
 
 namespace pdf_combine.Func
 {
@@ -33,6 +34,7 @@ namespace pdf_combine.Func
             }
             catch(Exception x)
             {
+				Log.Logger.Error(x, "Something went wrong.");
                 return false;
             }
             return true;
