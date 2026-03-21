@@ -24,7 +24,7 @@ namespace pdf_combine.Func
                 PdfDocument newDoc = new PdfDocument();
                 foreach (var file in fileListRows.OrderBy(x => x.order))
                 {
-                    var oldFile = PdfReader.Open(Path.Combine(file.filePath, file.filename), PdfDocumentOpenMode.Import);
+                    using var oldFile = PdfReader.Open(Path.Combine(file.filePath, file.filename), PdfDocumentOpenMode.Import);
                     foreach (var page in oldFile.Pages)
                     {
                         newDoc.Pages.Add(page);
@@ -34,7 +34,7 @@ namespace pdf_combine.Func
             }
             catch(Exception x)
             {
-				Log.Logger.Error(x, "Something went wrong.");
+                Log.Logger.Error(x, "Something went wrong combining files.");
                 return false;
             }
             return true;
