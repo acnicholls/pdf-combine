@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release-asset-upload-url: ${{ steps.create-tag-release.outputs.upload_url }}
-      current-version: ${{ steps.create-tag-release.outputs.version }}
+      current-version: ${{ steps.create-tag-release.outputs.tag_name }}
     steps:
       # create a tag and a release
       - name: Create Tag & Release
@@ -120,5 +120,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ needs.create-release.outputs.current-version }}
+          tag_name: ${{ needs.create-release.outputs.current-version }}
           files: ${{ github.workspace }}\pdf-combine-setup\Release\pdf-combine-setup.msi
