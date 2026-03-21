@@ -235,12 +235,13 @@ namespace pdf_combine.UserControls
             if (fileResult == DialogResult.OK)
             {
                 inputFilename = ofDialog.FileName;
-                PdfDocument pdfDoc = new PdfDocument();
                 try
                 {
-                    pdfDoc = PdfReader.Open(inputFilename);
-                    this.txtFileName.Text = Path.GetFileName(ofDialog.SafeFileName);
-                    this.txtNumOfPages.Text = pdfDoc.PageCount.ToString();
+                    using (var pdfDoc = PdfReader.Open(inputFilename, PdfDocumentOpenMode.Import))
+                    {
+                        this.txtFileName.Text = Path.GetFileName(ofDialog.SafeFileName);
+                        this.txtNumOfPages.Text = pdfDoc.PageCount.ToString();
+                    }
                 }
                 catch(Exception x)
                 {
