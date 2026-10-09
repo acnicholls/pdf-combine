@@ -100,61 +100,54 @@ namespace pdf_combine.UserControls
         private ErrorMessage validateBtnSplitText(string inputString)
         {
             // make sure we only have expected characters
-            //string validChars = @"1234567890\-,";
             string regExMatch = @"[^1234567890\-,]";
             if (Regex.IsMatch(inputString, regExMatch))
             {
                 return ErrorMessage.InvalidCharacters;
             }
-            // check for invalid characters in each range
+
+            int totalPages = Convert.ToInt32(this.txtNumOfPages.Text);
+
+            // validate each comma-delimited token
             var pageRanges = inputString.Split(',');
             foreach (var page in pageRanges)
             {
-                if (page.Length > 1)
+                if (string.IsNullOrWhiteSpace(page))
                 {
-                    var onlyOneDash = true;
-                    // only one dash per range
-                    if (page.Count(c => c.ToString() == "-") > 1)
+                    return ErrorMessage.InvalidCharacters;
+                }
+
+                if (page.Contains("-"))
+                {
+                    // token is a range: must be exactly number-dash-number
+                    if (page.Count(c => c == '-') > 1)
                     {
                         return ErrorMessage.InvalidCharacters;
                     }
-                    else
+                    var regexMatch = @"\d+\-\d+";
+                    if (!Regex.IsMatch(page, regexMatch))
                     {
-                        onlyOneDash = true;
+                        return ErrorMessage.NotNumberDashNumber;
                     }
-                    if (onlyOneDash)
+                    var rangeEnds = page.Split("-");
+                    if (Convert.ToInt32(rangeEnds[0]) >= Convert.ToInt32(rangeEnds[1]))
                     {
-                        // check if it's number-dash-number
-                        var regexMatch = @"\d+\-\d+";
-                        if (!Regex.IsMatch(page, regexMatch))
+                        return ErrorMessage.LeftNotLowerThanRight;
+                    }
+                    foreach (var end in rangeEnds)
+                    {
+                        if (Convert.ToInt32(end) < 1 || Convert.ToInt32(end) > totalPages)
                         {
-                            return ErrorMessage.NotNumberDashNumber;
-                        }
-                        var rangeEnds = page.Split("-");
-                        if(Convert.ToInt32(rangeEnds[0]) > Convert.ToInt32(rangeEnds[1]))
-                        {
-                            return ErrorMessage.LeftNotLowerThanRight;
-                        }
-                        foreach(var end in rangeEnds)
-                        {
-                            if(Convert.ToInt32(end) < 1 || Convert.ToInt32(end) > Convert.ToInt32(this.txtNumOfPages.Text))
-                            {
-                                return ErrorMessage.OutsideValidRange;
-                            }
+                            return ErrorMessage.OutsideValidRange;
                         }
                     }
-
                 }
                 else
                 {
-                    if(string.IsNullOrWhiteSpace(page))
+                    // token is a single page number (one or more digits)
+                    if (!int.TryParse(page, out int pageNum) || pageNum < 1 || pageNum > totalPages)
                     {
-                        return ErrorMessage.InvalidCharacters;
-                    }
-                    regExMatch = @"[^1234567890]";
-                    if (Regex.IsMatch(page, regExMatch))
-                    {
-                        return ErrorMessage.InvalidCharacters;
+                        return ErrorMessage.OutsideValidRange;
                     }
                 }
             }
@@ -235,12 +228,13 @@ namespace pdf_combine.UserControls
             if (fileResult == DialogResult.OK)
             {
                 inputFilename = ofDialog.FileName;
-                PdfDocument pdfDoc = new PdfDocument();
                 try
                 {
-                    pdfDoc = PdfReader.Open(inputFilename);
-                    this.txtFileName.Text = Path.GetFileName(ofDialog.SafeFileName);
-                    this.txtNumOfPages.Text = pdfDoc.PageCount.ToString();
+                    using (var pdfDoc = PdfReader.Open(inputFilename, PdfDocumentOpenMode.Import))
+                    {
+                        this.txtFileName.Text = Path.GetFileName(ofDialog.SafeFileName);
+                        this.txtNumOfPages.Text = pdfDoc.PageCount.ToString();
+                    }
                 }
                 catch(Exception x)
                 {

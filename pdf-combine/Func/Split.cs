@@ -1,5 +1,6 @@
 ﻿using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,24 +29,22 @@ namespace pdf_combine.Func
                 {
                     outputDir.Create();
                 }
-                var oldFile = PdfReader.Open(inputFilename, PdfDocumentOpenMode.Import);
+                using var oldFile = PdfReader.Open(inputFilename, PdfDocumentOpenMode.Import);
 
                 foreach (var page in pageListRows)
                 {
                     var newFileName = Path.Combine(outputDir.FullName, "Page" + (page + 1) + ".pdf");
                     newPage = new PdfDocument();
-                    // reopen in import mode
                     newPage.AddPage(oldFile.Pages[page]);
                     newPage.Save(newFileName);
                     newPage.Close();
+                    newPage = null;
                 }
             }
             catch (Exception x)
             {
-                if (newPage != null)
-                {
-                    newPage.Close();
-                }
+                Log.Logger.Error(x, "Something went wrong splitting file.");
+                newPage?.Close();
                 return false;
             }
             return true;
