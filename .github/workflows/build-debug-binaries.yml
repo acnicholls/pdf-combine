@@ -73,10 +73,14 @@ jobs:
       # send build log to github output
       - name: Upload Build Log
         id: upload-build-log
+        if: ${{ always() }}
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: build-user-installer-log
-          path: .\InstallerBuild.log
+          path: |
+            .\InstallerBuild.log
+            .\**\InstallerBuild.log
           retention-days: 5
 
       - name: Upload Check
