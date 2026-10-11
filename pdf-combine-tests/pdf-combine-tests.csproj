@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <RootNamespace>pdf_combine</RootNamespace>
+    <Configurations>Debug;Release;DebugCI</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

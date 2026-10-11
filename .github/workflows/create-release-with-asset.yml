@@ -17,36 +17,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  create-release:
+  get-version-tag:
     runs-on: ubuntu-latest
     outputs:
-      release-asset-upload-url: ${{ steps.create-tag-release.outputs.upload_url }}
-      current-version: ${{ steps.create-tag-release.outputs.tag_name }}
+      current-version: ${{ steps.get-version.outputs.nextStrict }}
     steps:
-      # create a tag and a release
-      - name: Create Tag & Release
-        id: create-tag-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: DasBen/release-on-push-action@master
+      - name: Get Version Tag
+        id: get-version
+        uses: ietf-tools/semver-action@v1
         with:
-          bump_version_scheme: patch
-          tag_prefix: v
-          use_github_release_notes: true
-          release_name: "Release <RELEASE_TAG>"
-          release_body: "Bug fixes and features for stability of the application."
-
-      # display the output of the release
-      - name: Check Output Parameters
-        id: get-release-outputs
-        run: |
-          echo "Got tag name ${{ steps.create-tag-release.outputs.tag_name }}"
-          echo "Got release version ${{ steps.create-tag-release.outputs.version }}"
-          echo "Upload release artifacts to ${{ steps.create-tag-release.outputs.upload_url }}"
+          token: ${{ github.token }}
+          branch: ${{ github.ref }}
+          patchAll: true
+          skipInvalidTags: true
+          noVersionBumpBehavior: patch
+          maxTagsToFetch: 2000
+          fallbackTag: v0.0.0
+          noNewCommitBehavior: current
 
   prepare-upload-asset:
-    runs-on: windows-latest
-    needs: [create-release]
+    # VS Installer Projects is stable on the VS 2022 runner; the VS 2026 image crashes devenv during startup.
+    runs-on: windows-2022
+    needs: get-version-tag
+    outputs:
+      upload-build-artifact: ${{ steps.upload-build-artifact.outputs.artifact-id }}
     steps:
       # get the latest code from the repo
       - name: Checkout Code
@@ -56,6 +50,7 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v3
       - name: Setup VS Dev Environment
+        id: setup-vsdev
         uses: seanmiddleditch/gha-setup-vsdevenv@v5
 
       - name: Replace in files
@@ -63,7 +58,15 @@ jobs:
         with:
           files: '**\**\*.csproj'
           search-text: "<Version>2.0.0</Version>"
-          replacement-text: "<Version>${{ needs.create-release.outputs.current-version }}</Version>"
+          replacement-text: "<Version>${{ needs.get-version-tag.outputs.current-version }}</Version>"
+
+      - name: set version number, in installer
+        uses: flcdrg/replace-multiple-action@v3.0.6
+        with:
+          files: "**/**/*.vdproj"
+          find: '[
+            { "find": "\"ProductVersion\" = \"8:1.0.0\"", "replace": "\"ProductVersion\" = \"8:${{ needs.get-version-tag.outputs.current-version }}\"" }
+            ]'
 
       # restore nuget dependencies
       - name: run nuget restore
@@ -72,28 +75,110 @@ jobs:
         run: nuget restore .\pdf-combine.sln
 
       # builds the custom-installer and user-interface before it's own cab
+      - name: Install VS Installer Projects extension
+        id: install-vs-installer-projects
+        shell: powershell
+        continue-on-error: true
+        env:
+          VS_DEV_ROOT: ${{ steps.setup-vsdev.outputs.install-path }}
+        run: |
+          $vsixUrl = 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/VisualStudioClient/vsextensions/MicrosoftVisualStudio2017InstallerProjects/latest/vspackage'
+          $vsixPath = "$PWD\InstallerProjects.vsix"
+          Write-Host "Downloading VSIX from $vsixUrl"
+          try {
+            Invoke-WebRequest -Uri $vsixUrl -OutFile $vsixPath -UseBasicParsing -ErrorAction Stop
+            Write-Host "Downloaded VSIX to $vsixPath"
+          } catch {
+            Write-Warning "Failed to download VSIX: $_"
+            exit 0
+          }
+          $installed = $false
+          if ($env:VS_DEV_ROOT) {
+            $candidate = Join-Path $env:VS_DEV_ROOT 'Common7\IDE\VSIXInstaller.exe'
+            Write-Host "Using VS root from previous step: $env:VS_DEV_ROOT"
+            if (Test-Path $candidate) {
+              Write-Host "Found VSIX installer at $candidate. Installing..."
+              & $candidate $vsixPath /q
+              if ($LASTEXITCODE -eq 0) { Write-Host "Installed extension via $candidate"; $installed = $true }
+              else { Write-Warning "VSIXInstaller returned exit code $LASTEXITCODE" }
+            } else { Write-Warning "VSIXInstaller not found at $candidate" }
+          }
+          if (-not $installed) {
+            $vswhereCmd = $null
+            $cmdObj = Get-Command vswhere.exe -ErrorAction SilentlyContinue
+            if ($cmdObj) { $vswhereCmd = $cmdObj.Source }
+            elseif (Test-Path 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe') { $vswhereCmd = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe' }
+            if ($vswhereCmd) {
+              Write-Host "Found vswhere at $vswhereCmd. Querying for latest installation."
+              try {
+                $json = & $vswhereCmd -latest -products * -format json 2>$null
+                if ($json) {
+                  $insts = $json | ConvertFrom-Json
+                  if ($insts -is [System.Array]) { $inst = $insts[0] } else { $inst = $insts }
+                  $installPath = $inst.installationPath
+                  if ($installPath) {
+                    $candidate = Join-Path $installPath 'Common7\\IDE\\VSIXInstaller.exe'
+                    if (Test-Path $candidate) {
+                      Write-Host "Found VSIX installer at $candidate. Installing..."
+                      & $candidate $vsixPath /q
+                      if ($LASTEXITCODE -eq 0) { Write-Host "Installed extension via vswhere path"; $installed = $true }
+                      else { Write-Warning "VSIXInstaller returned exit code $LASTEXITCODE" }
+                    } else { Write-Warning "VSIXInstaller not found at $candidate" }
+                  } else { Write-Warning "vswhere did not return installationPath" }
+                } else { Write-Warning "vswhere returned empty" }
+              } catch {
+                Write-Warning "vswhere query failed: $_"
+              }
+            } else {
+              Write-Warning "vswhere not found on runner"
+            }
+          }
+          if (-not $installed) { Write-Warning 'No VSIXInstaller found or installation failed; continue and upload logs for diagnosis.' }
+
       - name: Build User Setup MSI
         id: build-user-installer
-        shell: cmd
+        shell: powershell
         working-directory: .
         timeout-minutes: 10
         continue-on-error: true
         run: |
-          devenv .\pdf-combine.sln ^
-          /Build RELEASE ^
-          /Project pdf-combine-setup ^
-          /Log InstallerBuild.log ^
-          /Out InstallerBuild.log ^
-          /NoSplash
+          & devenv.com .\pdf-combine.sln `
+            /Build RELEASE `
+            /Project pdf-combine-setup `
+            /Log InstallerBuild.devenv.log `
+            /Out InstallerBuild.devenv.log `
+            /NoSplash *>&1 |
+            Tee-Object -FilePath InstallerBuild.output.log
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
 
       # send build log to github output
       - name: Upload Build Log
         id: upload-build-log
+        if: ${{ always() }}
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: build-installer-log
-          path: ${{ github.workspace }}\InstallerBuild.log
+          path: |
+            ${{ github.workspace }}\InstallerBuild.output.log
+            ${{ github.workspace }}\InstallerBuild.devenv.log
           retention-days: 5
+
+      - name: Verify MSI Output
+        id: verify-installer-output
+        if: ${{ steps.build-user-installer.outcome == 'success' }}
+        shell: powershell
+        run: |
+          $installerPath = Join-Path $env:GITHUB_WORKSPACE 'pdf-combine-setup\Release\pdf-combine-setup.msi'
+          if (-not (Test-Path $installerPath -PathType Leaf)) {
+            Write-Host "Expected installer not found: $installerPath"
+            Write-Host 'Contents of pdf-combine-setup after build:'
+            Get-ChildItem (Join-Path $env:GITHUB_WORKSPACE 'pdf-combine-setup') -Recurse | Select-Object FullName
+            throw 'Installer output missing after successful build.'
+          }
+          "installer-path=$installerPath" >> $env:GITHUB_OUTPUT
 
       # check for build success before continuing
       - name: Upload Check
@@ -107,11 +192,66 @@ jobs:
       # send build output to github output
       - name: Upload Build Artifact
         id: upload-build-artifact
+        if: ${{ steps.verify-installer-output.outcome == 'success' }}
         uses: actions/upload-artifact@v4
         with:
           name: pdf-combine-setup.msi
-          path: ${{ github.workspace }}\pdf-combine-setup\Release\pdf-combine-setup.msi
+          path: ${{ steps.verify-installer-output.outputs.installer-path }}
+          if-no-files-found: error
           retention-days: 5
+
+      - name: Final Upload Check
+        id: final-upload-check
+        if: ${{ always() && steps.verify-installer-output.outcome == 'success' && steps.upload-build-artifact.outcome != 'success' }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            core.setFailed('installer artifact upload did not complete successfully.')
+
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: [prepare-upload-asset, get-version-tag]
+    outputs:
+      release-asset-upload-url: ${{ steps.create-release.outputs.upload_url }}
+    steps:
+      - name: Tag the Repo
+        id: tag-the-repo
+        shell: powershell
+        run: |
+          git tag -a -m "tagging the next RELEASE version" v${{ needs.get-version-tag.outputs.current-version }} ${{ github.sha }}
+          git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/acnicholls/pdf-combine.git --follow-tags
+
+      # generate release
+      - name: Create Release
+        id: create-release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.get-version-tag.outputs.current-version }}
+          generate_release_notes: true
+          name: PDF Combine Release v${{ needs.get-version-tag.outputs.current-version }}
+          draft: false
+          prerelease: false
+          make_latest: true
+
+      # display the output of the release
+      - name: Check Output Parameters
+        id: get-release-outputs
+        run: |
+          echo "Got tag name ${{ steps.create-release.outputs.tag_name }}"
+          echo "Got release version ${{ steps.create-release.outputs.version }}"
+          echo "Upload release artifacts to ${{ steps.create-release.outputs.upload_url }}"
+
+  upload-release-asset:
+    runs-on: ubuntu-latest
+    needs: [get-version-tag, prepare-upload-asset, create-release]
+    steps:
+      - name: download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.prepare-upload-asset.outputs.upload-build-artifact }}
+          path: ${{ github.workspace }}\pdf-combine-setup.msi
 
       # upload build output to release
       - name: Upload Release Asset
@@ -120,5 +260,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ needs.create-release.outputs.current-version }}
-          files: ${{ github.workspace }}\pdf-combine-setup\Release\pdf-combine-setup.msi
+          tag_name: v${{ needs.get-version-tag.outputs.current-version }}
+          files: ${{ github.workspace }}\pdf-combine-setup.msi
