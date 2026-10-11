@@ -36,7 +36,8 @@ jobs:
           noNewCommitBehavior: current
 
   prepare-upload-asset:
-    runs-on: windows-latest
+    # VS Installer Projects is stable on the VS 2022 runner; the VS 2026 image crashes devenv during startup.
+    runs-on: windows-2022
     needs: get-version-tag
     outputs:
       upload-build-artifact: ${{ steps.upload-build-artifact.outputs.artifact-id }}
@@ -141,7 +142,7 @@ jobs:
         timeout-minutes: 10
         continue-on-error: true
         run: |
-          & devenv.exe .\pdf-combine.sln `
+          & devenv.com .\pdf-combine.sln `
             /Build RELEASE `
             /Project pdf-combine-setup `
             /Log InstallerBuild.devenv.log `
