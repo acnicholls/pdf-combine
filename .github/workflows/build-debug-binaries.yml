@@ -127,7 +127,7 @@ jobs:
         continue-on-error: true
         run: |
           & devenv.exe .\pdf-combine.sln `
-            /Build ${{ steps.get-build-type.outputs.build-type }} `
+            /Build ${{ steps.get-build-type.outputs.build-type }}CI `
             /Project pdf-combine-setup `
             /Log InstallerBuild.devenv.log `
             /Out InstallerBuild.devenv.log `
