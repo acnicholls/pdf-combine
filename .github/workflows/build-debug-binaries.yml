@@ -80,15 +80,15 @@ jobs:
       - name: Generate Coverage Summary
         id: generate-coverage-summary
         if: ${{ always() }}
-        uses: irongut/CodeCoverageSummary@v1.3.0
-        with:
-          filename: .\pdf-combine-tests\TestResults\**\coverage.cobertura.xml
-          badge: false
-          format: markdown
-          hide_branch_rate: false
-          hide_complexity: true
-          indicators: true
-          output: both
+        shell: powershell
+        run: |
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+          $reportGenerator = Join-Path $env:USERPROFILE '.dotnet\tools\reportgenerator.exe'
+          & $reportGenerator "-reports:${{ github.workspace }}/pdf-combine-tests/TestResults/**/coverage.cobertura.xml" "-targetdir:${{ github.workspace }}/pdf-combine-tests/CoverageReport" '-reporttypes:MarkdownSummary;TextSummary'
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+          Copy-Item "${{ github.workspace }}/pdf-combine-tests/CoverageReport/Summary.md" "${{ github.workspace }}/code-coverage-results.md"
 
       - name: Comment Coverage On PR
         id: comment-coverage-on-pr
