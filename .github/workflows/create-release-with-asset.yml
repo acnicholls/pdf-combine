@@ -165,6 +165,20 @@ jobs:
             ${{ github.workspace }}\InstallerBuild.devenv.log
           retention-days: 5
 
+      - name: Verify MSI Output
+        id: verify-installer-output
+        if: ${{ steps.build-user-installer.outcome == 'success' }}
+        shell: powershell
+        run: |
+          $installerPath = Join-Path $env:GITHUB_WORKSPACE 'pdf-combine-setup\Release\pdf-combine-setup.msi'
+          if (-not (Test-Path $installerPath -PathType Leaf)) {
+            Write-Host "Expected installer not found: $installerPath"
+            Write-Host 'Contents of pdf-combine-setup after build:'
+            Get-ChildItem (Join-Path $env:GITHUB_WORKSPACE 'pdf-combine-setup') -Recurse | Select-Object FullName
+            throw 'Installer output missing after successful build.'
+          }
+          "installer-path=$installerPath" >> $env:GITHUB_OUTPUT
+
       # check for build success before continuing
       - name: Upload Check
         id: upload-check
@@ -177,11 +191,21 @@ jobs:
       # send build output to github output
       - name: Upload Build Artifact
         id: upload-build-artifact
+        if: ${{ steps.verify-installer-output.outcome == 'success' }}
         uses: actions/upload-artifact@v4
         with:
           name: pdf-combine-setup.msi
-          path: ${{ github.workspace }}\pdf-combine-setup\Release\pdf-combine-setup.msi
+          path: ${{ steps.verify-installer-output.outputs.installer-path }}
+          if-no-files-found: error
           retention-days: 5
+
+      - name: Final Upload Check
+        id: final-upload-check
+        if: ${{ always() && steps.verify-installer-output.outcome == 'success' && steps.upload-build-artifact.outcome != 'success' }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            core.setFailed('installer artifact upload did not complete successfully.')
 
   create-release:
     runs-on: ubuntu-latest
