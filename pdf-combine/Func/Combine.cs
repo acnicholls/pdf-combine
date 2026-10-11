@@ -9,7 +9,7 @@ using Serilog;
 
 namespace pdf_combine.Func
 {
-    public class Combine
+    public static class Combine
     {
         /// <summary>
         /// this method combines all the listed pdf files into one file, in the order they appear in the list

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
@@ -29,10 +29,7 @@
 
   <!-- Include only the non-WinForms business logic from the main project -->
   <ItemGroup>
-    <Compile Include="..\pdf-combine\Func\Combine.cs" Link="Func\Combine.cs" />
-    <Compile Include="..\pdf-combine\Func\Split.cs" Link="Func\Split.cs" />
-    <Compile Include="..\pdf-combine\PdfFileList.Designer.cs" Link="PdfFileList.Designer.cs" />
-    <Compile Include="..\pdf-combine\PdfFileList.cs" Link="PdfFileList.cs" />
+    <ProjectReference Include="..\pdf-combine\pdf-combine.csproj" />
   </ItemGroup>
 
 </Project>

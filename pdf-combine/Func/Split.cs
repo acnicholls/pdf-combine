@@ -7,7 +7,7 @@ using System.IO;
 
 namespace pdf_combine.Func
 {
-    public class Split
+    public static class Split
     {
 
         /// <summary>
