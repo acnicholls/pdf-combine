@@ -130,7 +130,7 @@ jobs:
             /Build ${{ steps.get-build-type.outputs.build-type }} `
             /Project pdf-combine-setup `
             /Log InstallerBuild.devenv.log `
-            /Out InstallerBuild.devenv.log `            
+            /Out InstallerBuild.devenv.log `
             /NoSplash *>&1 |
             Tee-Object -FilePath InstallerBuild.output.log
           if ($LASTEXITCODE -ne 0) {
