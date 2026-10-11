@@ -49,6 +49,7 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v3
       - name: Setup VS Dev Environment
+        id: setup-vsdev
         uses: seanmiddleditch/gha-setup-vsdevenv@v5
 
       - name: Replace in files
@@ -73,6 +74,66 @@ jobs:
         run: nuget restore .\pdf-combine.sln
 
       # builds the custom-installer and user-interface before it's own cab
+      - name: Install VS Installer Projects extension
+        id: install-vs-installer-projects
+        shell: powershell
+        continue-on-error: true
+        env:
+          VS_DEV_ROOT: ${{ steps.setup-vsdev.outputs.install-path }}
+        run: |
+          $vsixUrl = 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/VisualStudioClient/vsextensions/MicrosoftVisualStudio2017InstallerProjects/latest/vspackage'
+          $vsixPath = "$PWD\InstallerProjects.vsix"
+          Write-Host "Downloading VSIX from $vsixUrl"
+          try {
+            Invoke-WebRequest -Uri $vsixUrl -OutFile $vsixPath -UseBasicParsing -ErrorAction Stop
+            Write-Host "Downloaded VSIX to $vsixPath"
+          } catch {
+            Write-Warning "Failed to download VSIX: $_"
+            exit 0
+          }
+          $installed = $false
+          if ($env:VS_DEV_ROOT) {
+            $candidate = Join-Path $env:VS_DEV_ROOT 'Common7\IDE\VSIXInstaller.exe'
+            Write-Host "Using VS root from previous step: $env:VS_DEV_ROOT"
+            if (Test-Path $candidate) {
+              Write-Host "Found VSIX installer at $candidate. Installing..."
+              & $candidate $vsixPath /q
+              if ($LASTEXITCODE -eq 0) { Write-Host "Installed extension via $candidate"; $installed = $true }
+              else { Write-Warning "VSIXInstaller returned exit code $LASTEXITCODE" }
+            } else { Write-Warning "VSIXInstaller not found at $candidate" }
+          }
+          if (-not $installed) {
+            $vswhereCmd = $null
+            $cmdObj = Get-Command vswhere.exe -ErrorAction SilentlyContinue
+            if ($cmdObj) { $vswhereCmd = $cmdObj.Source }
+            elseif (Test-Path 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe') { $vswhereCmd = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe' }
+            if ($vswhereCmd) {
+              Write-Host "Found vswhere at $vswhereCmd. Querying for latest installation."
+              try {
+                $json = & $vswhereCmd -latest -products * -format json 2>$null
+                if ($json) {
+                  $insts = $json | ConvertFrom-Json
+                  if ($insts -is [System.Array]) { $inst = $insts[0] } else { $inst = $insts }
+                  $installPath = $inst.installationPath
+                  if ($installPath) {
+                    $candidate = Join-Path $installPath 'Common7\\IDE\\VSIXInstaller.exe'
+                    if (Test-Path $candidate) {
+                      Write-Host "Found VSIX installer at $candidate. Installing..."
+                      & $candidate $vsixPath /q
+                      if ($LASTEXITCODE -eq 0) { Write-Host "Installed extension via vswhere path"; $installed = $true }
+                      else { Write-Warning "VSIXInstaller returned exit code $LASTEXITCODE" }
+                    } else { Write-Warning "VSIXInstaller not found at $candidate" }
+                  } else { Write-Warning "vswhere did not return installationPath" }
+                } else { Write-Warning "vswhere returned empty" }
+              } catch {
+                Write-Warning "vswhere query failed: $_"
+              }
+            } else {
+              Write-Warning "vswhere not found on runner"
+            }
+          }
+          if (-not $installed) { Write-Warning 'No VSIXInstaller found or installation failed; continue and upload logs for diagnosis.' }
+
       - name: Build User Setup MSI
         id: build-user-installer
         shell: cmd
@@ -90,10 +151,14 @@ jobs:
       # send build log to github output
       - name: Upload Build Log
         id: upload-build-log
+        if: ${{ always() }}
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: build-installer-log
-          path: ${{ github.workspace }}\InstallerBuild.log
+          path: |
+            ${{ github.workspace }}\InstallerBuild.log
+            ${{ github.workspace }}\**\InstallerBuild.log
           retention-days: 5
 
       # check for build success before continuing

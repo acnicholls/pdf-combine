@@ -88,14 +88,17 @@ jobs:
           }
           if (-not $installed) {
             # Fallback: use vswhere to find the installed Visual Studio instance (preferred on windows-latest)
-            $vswhereCmd = (Get-Command vswhere.exe -ErrorAction SilentlyContinue).Source
-            if (-not $vswhereCmd -and Test-Path 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe') { $vswhereCmd = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe' }
+            $vswhereCmd = $null
+            $cmdObj = Get-Command vswhere.exe -ErrorAction SilentlyContinue
+            if ($cmdObj) { $vswhereCmd = $cmdObj.Source }
+            elseif (Test-Path 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe') { $vswhereCmd = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe' }
             if ($vswhereCmd) {
               Write-Host "Found vswhere at $vswhereCmd. Querying for latest installation."
               try {
                 $json = & $vswhereCmd -latest -products * -format json 2>$null
                 if ($json) {
-                  $inst = $json | ConvertFrom-Json
+                  $insts = $json | ConvertFrom-Json
+                  if ($insts -is [System.Array]) { $inst = $insts[0] } else { $inst = $insts }
                   $installPath = $inst.installationPath
                   if ($installPath) {
                     $candidate = Join-Path $installPath 'Common7\\IDE\\VSIXInstaller.exe'
