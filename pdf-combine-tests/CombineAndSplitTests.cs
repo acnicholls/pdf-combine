@@ -226,5 +226,47 @@ namespace pdf_combine_tests
             bool splitResult = Split.Start(pages, source);
             Assert.True(splitResult, "Split should open the same file that Combine used as input.");
         }
+
+        // ------------------------------------------------------------------ Negative / error-path tests to improve coverage
+
+        [Fact]
+        public void Combine_ReturnsFalse_WhenInputFileMissing()
+        {
+            var source = CreateTestPdf("exists.pdf", pageCount: 1);
+            var missing = Path.Combine(_testDir, "does-not-exist.pdf");
+            var output = Path.Combine(_testDir, "should-not-exist.pdf");
+
+            var rows = MakeFileRows(source, missing);
+            bool result = Combine.Start(rows, output);
+
+            Assert.False(result, "Combine.Start should return false when an input file is missing.");
+            Assert.False(File.Exists(output), "No output should be produced when combine fails.");
+        }
+
+        [Fact]
+        public void Split_ReturnsFalse_WhenPageIndexOutOfRange()
+        {
+            var source = CreateTestPdf("small.pdf", pageCount: 2);
+            // request a page beyond the end of the document
+            var pages = new List<int> { 10 };
+
+            bool result = Split.Start(pages, source);
+
+            Assert.False(result, "Split.Start should return false when a requested page index is out of range.");
+            // Output directory may have been created before the error
+            string outputDir = Path.Combine(_testDir, Path.GetFileNameWithoutExtension(source));
+            Assert.True(Directory.Exists(outputDir));
+        }
+
+        [Fact]
+        public void Split_ReturnsFalse_WhenInputFileMissing()
+        {
+            var missing = Path.Combine(_testDir, "no-such.pdf");
+            var pages = new List<int> { 0 };
+
+            bool result = Split.Start(pages, missing);
+
+            Assert.False(result, "Split.Start should return false when the input PDF does not exist.");
+        }
     }
 }
