@@ -2,6 +2,8 @@
 # results to both github actions store and the Release
 name: create-release-with-asset
 run-name: Tag & Release for ${{ github.event_name }} triggered by ${{ github.triggering_actor }}
+permissions:
+  contents: read
 concurrency:
   group: release-create
   cancel-in-progress: true
@@ -216,10 +218,17 @@ jobs:
     outputs:
       release-asset-upload-url: ${{ steps.create-release.outputs.upload_url }}
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
       - name: Tag the Repo
         id: tag-the-repo
-        shell: powershell
+        shell: pwsh
         run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git tag -a -m "tagging the next RELEASE version" v${{ needs.get-version-tag.outputs.current-version }} ${{ github.sha }}
           git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/acnicholls/pdf-combine.git --follow-tags
 
@@ -228,7 +237,7 @@ jobs:
         id: create-release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ needs.get-version-tag.outputs.current-version }}
+          tag_name: v${{ needs.get-version-tag.outputs.current-version }}
           generate_release_notes: true
           name: PDF Combine Release v${{ needs.get-version-tag.outputs.current-version }}
           draft: false
@@ -245,13 +254,15 @@ jobs:
 
   upload-release-asset:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: [get-version-tag, prepare-upload-asset, create-release]
     steps:
       - name: download build artifact
         uses: actions/download-artifact@v8
         with:
           artifact-ids: ${{ needs.prepare-upload-asset.outputs.upload-build-artifact }}
-          path: ${{ github.workspace }}\pdf-combine-setup.msi
+          path: ${{ github.workspace }}/release-asset
 
       # upload build output to release
       - name: Upload Release Asset
@@ -261,4 +272,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ needs.get-version-tag.outputs.current-version }}
-          files: ${{ github.workspace }}\pdf-combine-setup.msi
+          files: ${{ github.workspace }}/release-asset/pdf-combine-setup.msi
