@@ -136,17 +136,21 @@ jobs:
 
       - name: Build User Setup MSI
         id: build-user-installer
-        shell: cmd
+        shell: powershell
         working-directory: .
         timeout-minutes: 10
         continue-on-error: true
         run: |
-          devenv.exe .\pdf-combine.sln ^
-          /Build RELEASE ^
-          /Project pdf-combine-setup ^
-          /Log InstallerBuild.log ^
-          /Out InstallerBuild.log ^
-          /NoSplash
+          & devenv.exe .\pdf-combine.sln `
+            /Build RELEASE `
+            /Project pdf-combine-setup `
+            /Log InstallerBuild.devenv.log `
+            /Out InstallerBuild.devenv.log `
+            /NoSplash *>&1 |
+            Tee-Object -FilePath InstallerBuild.output.log
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
 
       # send build log to github output
       - name: Upload Build Log
@@ -157,8 +161,8 @@ jobs:
         with:
           name: build-installer-log
           path: |
-            ${{ github.workspace }}\InstallerBuild.log
-            ${{ github.workspace }}\**\InstallerBuild.log
+            ${{ github.workspace }}\InstallerBuild.output.log
+            ${{ github.workspace }}\InstallerBuild.devenv.log
           retention-days: 5
 
       # check for build success before continuing
